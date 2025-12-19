@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Plotly JS Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Enrollment Over Time</h1>
+    <p>Select a department to update the chart.</p>
+  </header>
+
+  <main>
+    <section class="controls">
+      <label for="deptSelect">Department:</label>
+      <select id="deptSelect">
+        <!-- Options will be populated by JS -->
+      </select>
+    </section>
+
+    <section class="chart-container">
+      <div id="chart"></div>
+    </section>
+  </main>
+
+  <!-- Plotly from CDN -->
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+
+  <!-- Your JS -->
+  <script src="js/main.js"></script>
+</body>
+</html>
