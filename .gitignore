@@ -1,0 +1,18 @@
+# Python virtual environments
+.venv/
+venv/
+ENV/
+env/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Jupyter / Python tooling
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# OS noise
+.DS_Store
+Thumbs.db
+
