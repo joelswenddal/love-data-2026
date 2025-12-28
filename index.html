@@ -1,34 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Plotly JS Demo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="css/styles.css" />
-</head>
-<body>
-  <header>
-    <h1>Enrollment Over Time</h1>
-    <p>Select a department to update the chart.</p>
-  </header>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Big Ten Completions by CIP2 (IPEDS)</title>
 
-  <main>
-    <section class="controls">
-      <label for="deptSelect">Department:</label>
-      <select id="deptSelect">
-        <!-- Options will be populated by JS -->
-      </select>
-    </section>
+    <!-- Plotly (CDN) -->
+    <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
 
-    <section class="chart-container">
-      <div id="chart"></div>
-    </section>
-  </main>
+    <link rel="stylesheet" href="./css/styles.css" />
 
-  <!-- Plotly from CDN -->
-  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <style>
+      /* Minimal fallback styling in case styles.css is empty */
+      body {
+        font-family: system-ui, Arial, sans-serif;
+        margin: 20px;
+      }
+      .row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: end;
+      }
+      .control {
+        min-width: 260px;
+      }
+      label {
+        display: block;
+        font-size: 12px;
+        color: #333;
+        margin-bottom: 4px;
+      }
+      select {
+        width: 100%;
+        padding: 6px;
+      }
+      #chart {
+        width: 100%;
+        height: 720px;
+        margin-top: 12px;
+      }
+      .note {
+        max-width: 1100px;
+        color: #444;
+        font-size: 13px;
+        line-height: 1.4;
+        margin-top: 10px;
+      }
+      .error {
+        color: #b00020;
+        font-weight: 600;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
 
-  <!-- Your JS -->
-  <script src="js/main.js"></script>
-</body>
+  <body>
+    <h1>Big Ten Completions by CIP2 (IPEDS) - Academic Year 2023-2024</h1>
+
+    <div class="row">
+      <div class="control">
+        <label for="institutionSelect">Institution</label>
+        <select id="institutionSelect"></select>
+      </div>
+
+      <div class="control">
+        <label for="majorSelect">Major</label>
+        <select id="majorSelect">
+          <option value="First major">Major 1 (Primary major)</option>
+          <option value="Second major">Major 2 (Second major)</option>
+          <option value="All">All (Major 1 + Major 2)</option>
+        </select>
+      </div>
+
+      <div class="control">
+        <label for="degreeGroupSelect">Degree group</label>
+        <select id="degreeGroupSelect">
+          <option value="All">All</option>
+          <option value="Bachelors">Bachelors</option>
+          <option value="Graduate">Graduate</option>
+          <option value="Associates">Associates</option>
+          <option value="Graduate-Doctoral Professional/Other">
+            Graduate-Doctoral Professional/Other
+          </option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div class="control">
+        <label for="awardLevelSelect">Award level</label>
+        <select id="awardLevelSelect">
+          <option value="All">All</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="chart"></div>
+
+    <div id="error" class="error" style="display: none"></div>
+    <p class="note" id="note"></p>
+
+    <!-- Your app script -->
+    <script src="./js/app.js"></script>
+  </body>
 </html>
