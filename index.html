@@ -40,6 +40,12 @@
         height: 720px;
         margin-top: 12px;
       }
+      #comparisonChart {
+        width: 100%;
+        height: 720px;
+        margin-top: 18px;
+      }
+
       .note {
         max-width: 1100px;
         color: #444;
@@ -93,9 +99,22 @@
           <option value="All">All</option>
         </select>
       </div>
+
+      <div class="control">
+        <label for="cip2CompareSelect">Compare CIP2 across institutions</label>
+        <select id="cip2CompareSelect">
+          <option value="">
+            None selected — choose a CIP2 area to compare institutions
+          </option>
+        </select>
+      </div>
     </div>
 
+    
+
     <div id="chart"></div>
+
+    <div id="comparisonChart"></div>
 
     <div id="error" class="error" style="display: none"></div>
     <p class="note" id="note"></p>
