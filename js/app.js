@@ -60,28 +60,36 @@ function clearSelectedCip2() {
 // ------------------------------------------------------------
 // 1) Color palette + deterministic CIP2->color mapping
 // ------------------------------------------------------------
-//
-// Okabe-Ito + a few additional distinct hues (generally colorblind-friendly).
-// We'll cycle if there are more CIP2 codes than colors.
+
+// Softened, colorblind-conscious categorical palette
 const CIP_PALETTE = [
-  "#0072B2", // blue
-  "#E69F00", // orange
-  "#009E73", // green
-  "#D55E00", // vermillion
-  "#CC79A7", // purple/pink
-  "#56B4E9", // sky blue
-  "#F0E442", // yellow
-  "#332288", // indigo
-  "#88CCEE", // light blue
-  "#44AA99", // teal
-  "#117733", // dark green
-  "#999933", // olive
-  "#DDCC77", // sand
-  "#CC6677", // rose
-  "#882255", // wine
-  "#AA4499", // violet
-  "#999999", // grey
+  "#2C6DA4", // softened blue
+  "#C9891A", // softened orange
+  "#2A8C6B", // softened green
+  "#B5533C", // softened vermillion
+  "#B07AA1", // softened purple/pink
+  "#6BAED6", // softened sky blue
+  "#C9BE6B", // softened yellow/khaki
+  "#3B3B8F", // softened indigo
+  "#9CCFE3", // softened light blue
+  "#4FA59A", // softened teal
+  "#2B7A4B", // softened dark green
+  "#8A8A3A", // softened olive
+  "#D8C77A", // softened sand
+  "#B97A89", // softened rose
+  "#7B2A44", // softened wine
+  "#8F4A9A", // softened violet
+  "#9A9A9A", // neutral grey
+
+  // --- NEW additions ---
+  "#5C7F8A", // muted steel blue
+  "#8B6D3A", // muted brown/gold
+  "#6B8E5A", // muted moss green
+  "#7A6F9B", // muted lavender-indigo
+  "#A68C8A", // muted warm taupe
+  "#5F5F5F", // dark neutral grey
 ];
+
 
 let cipColorMap = new Map();
 
@@ -162,7 +170,7 @@ function escapeHtml(str) {
  * Shorten a title to a maximum length, adding ellipsis if needed.
  * Avoids ugly mid-word truncation most of the time, but guarantees a hard cap.
  */
-function makeShortTitle(title, maxLen = 32) {
+function makeShortTitle(title, maxLen = 50) {
   if (!title) return "";
   const t = String(title).trim();
   if (t.length <= maxLen) return t;
@@ -483,8 +491,15 @@ function buildInstitutionComparison(rowsAllInst, selectedCip2Code) {
 // ------------------------------------------------------------
 
 /**
- * Render Plotly treemap.
- */
+ * Render the treemap in div#chart.
+ * Input: aggregated rows [{ cipCode, cipTitle, total }], selections
+ * Uses cipColorMap for stable colors.
+ * Includes filter context in hover tooltip.
+ * Uses customdata to store full cipTitle for tooltips and click handling.
+ * Renders via Plotly.react for efficient updates.
+ * Clears previous error messages on success.
+  */
+
 function renderTreemap(aggRows, sel) {
   if (!ensureElementExists("chart", "Treemap container")) return;
 
@@ -492,7 +507,7 @@ function renderTreemap(aggRows, sel) {
 
   const childLabels = aggRows.map((r) => {
     const shortTitle = makeShortTitle(r.cipTitle, 30);
-    return `${r.cipCode} — ${shortTitle}`;
+    return shortTitle;
   });
 
   const labels = [root, ...childLabels];
@@ -513,54 +528,108 @@ function renderTreemap(aggRows, sel) {
     })),
   ];
 
+  // ------------------------------------------------------------
+  // NEW: build filter context for hover tooltip
+  // ------------------------------------------------------------
+
+  function formatFilterLabel(label, value) {
+    return value && value !== "All" ? `${label}: ${value}` : null;
+  }
+
+  const filterLines = [
+    formatFilterLabel("Major", sel.major),
+    formatFilterLabel("Degree group", sel.degreeGroup),
+    formatFilterLabel("Award level", sel.awardLevel),
+  ].filter(Boolean);
+
+  const filterContextHtml =
+  filterLines.length > 0
+    ? "<br><br><span style='font-size:11px'>" +
+        "<i>Filters:</i><br>" +
+        filterLines.join("<br>") +
+      "</span>"
+    : "";
+
+
+  // ------------------------------------------------------------
+  // Treemap trace
+  // ------------------------------------------------------------
   const trace = {
     type: "treemap",
     labels,
     parents,
     values,
     textinfo: "label+percent parent",
-    textfont: { size: 14 },
+    textfont: { size: 12 },
+
     marker: { colors, line: { width: 2, color: "#FFFFFF" } },
     customdata,
     hovertemplate:
       "<b>%{customdata.cipTitle}</b><br>" +
-      "CIP2: %{customdata.cipCode}<br>" +
+      "CIP2 Code: %{customdata.cipCode}<br>" +
       "Completions: %{value:,}<br>" +
-      "Share of institution: %{percentParent:.1%}<extra></extra>",
+      "Share of institution: %{percentParent:.1%}" +
+      filterContextHtml +
+      "<extra></extra>",
   };
 
   const layout = {
-    font: { size: 14 },
-    uniformtext: { minsize: 14, mode: "hide" },
+    font: { size: 12 },
+    uniformtext: { minsize: 12, mode: "hide" },
     margin: { t: 20, l: 10, r: 10, b: 10 },
   };
 
   Plotly.react("chart", [trace], layout, { responsive: true });
+
+  // IMPORTANT: Plotly.react can drop listeners in some updates, so rebind after render.
+  attachTreemapInteractionHandlers();
+
 }
 
+// ------------------------------------------------------------
+// 9b) Rendering: Institution comparison bar chart (Plotly)
+// ------------------------------------------------------------
+
 /**
- * Render institution comparison chart (horizontal bar).
+ * Render the institution comparison chart in div#comparisonChart.
+ *
+ * Inputs:
+ *  - compRows: array of { institution, unitId, denom, numerator, share }
+ *      share is 0–1; we display it as percent.
+ *  - selectedCip2Label: user-facing label for the chosen CIP2 (e.g., "42 — PSYCHOLOGY")
+ *
+ * Behavior:
+ *  - If compRows is empty, the chart is purged (cleared).
+ *  - Chart is a horizontal bar chart, sorted by share descending (your build function already sorts).
+ *  - Hover shows numerator, denominator, and percent share.
+ *
+ * Requirements:
+ *  - index.html must contain <div id="comparisonChart"></div>
+ *  - That div must have a non-zero height (CSS), otherwise it will appear “missing.”
  */
 function renderInstitutionComparisonChart(compRows, selectedCip2Code, selectedCip2Label) {
   const elId = "comparisonChart";
-  if (!ensureElementExists(elId, "Institution comparison chart container")) return;
 
+  if (!ensureElementExists(elId, "Institution comparison chart container")) {
+    return;
+  }
+
+  // If no rows, clear the chart and exit
   if (!compRows || compRows.length === 0) {
     Plotly.purge(elId);
     return;
   }
 
+  const barColor = cipColorMap.get(String(selectedCip2Code)) || "#1f77b4"; // Plotly default fallback
+
   const y = compRows.map((d) => d.institution);
-  const x = compRows.map((d) => d.share * 100);
+  const x = compRows.map((d) => (safeNumber(d.share) * 100)); // percent
 
   const customdata = compRows.map((d) => ({
     unitId: d.unitId,
-    numerator: d.numerator,
-    denom: d.denom,
+    numerator: safeNumber(d.numerator),
+    denom: safeNumber(d.denom),
   }));
-
-  // Match the selected CIP2 color from the treemap palette
-  const barColor = cipColorMap.get(String(selectedCip2Code)) || "#1f77b4";
 
   const trace = {
     type: "bar",
@@ -569,6 +638,8 @@ function renderInstitutionComparisonChart(compRows, selectedCip2Code, selectedCi
     x,
     customdata,
     marker: { color: barColor },
+
+    // Bar color is set to match the selected CIP2 color in the treemap.
     hovertemplate:
       "<b>%{y}</b><br>" +
       `CIP2: ${selectedCip2Label}<br>` +
@@ -576,17 +647,46 @@ function renderInstitutionComparisonChart(compRows, selectedCip2Code, selectedCi
       "Total completions: %{customdata.denom:,.0f}<br>" +
       "Share: %{x:.2f}%<extra></extra>",
   };
-
+  
   const layout = {
     title: { text: `CIP2 share by institution — ${selectedCip2Label}` },
-    margin: { t: 50, l: 260, r: 30, b: 60 },
-    xaxis: { title: "Percent of completions", ticksuffix: "%", rangemode: "tozero" },
-    yaxis: { automargin: true, autorange: "reversed" },
+    margin: { t: 50, l: 300, r: 30, b: 60 },
+    xaxis: {
+      title: "Percent of completions",
+      ticksuffix: "%",
+      rangemode: "tozero",
+    },
+    yaxis: {
+      automargin: true,
+      autorange: "reversed", // highest share at top
+    },
+
+    // Scale height to number of institutions (keeps labels readable)
     height: Math.max(450, 22 * compRows.length + 140),
   };
+  
+  /** 
+  const layout = {
+    title: { text: `CIP2 share by institution — ${selectedCip2Label}` },
+    margin: { t: 50, l: 300, r: 30, b: 60 },
+    xaxis: {
+      title: "Percent of completions",
+      ticksuffix: "%",
+      rangemode: "tozero"
+    },
+    yaxis: {
+      automargin: true,
+      autorange: "reversed",
+      ticklabelstandoff: 12
+    },
+    height: Math.max(450, 22 * compRows.length + 140),
+  };
+   */
 
   Plotly.react(elId, [trace], layout, { responsive: true });
 }
+
+
 
 
 // ------------------------------------------------------------
@@ -735,44 +835,36 @@ function attachEventHandlers() {
 // ------------------------------------------------------------
 
 /**
- * Attach Plotly event handlers for the treemap (id="chart").
+ * (Re)attach Plotly event handlers for the treemap (id="chart").
  *
- * Goals:
- *  - Preserve Plotly's built-in treemap drilldown behavior (do NOT re-render treemap here).
- *  - Use treemap interaction as an alternate way to control the CIP2 comparison selection.
- *  - Keep dropdown (#cip2CompareSelect) and shared state (selectedCip2) synchronized.
+ * Why "reattach"?
+ * Plotly.react(...) can rebuild internal graph state, which may drop event listeners
+ * in some update scenarios. Calling this after each treemap render ensures:
+ *  - Treemap click always toggles CIP2 selection
+ *  - Dropdown stays in sync
+ *  - Comparison chart updates without interrupting Plotly drilldown
  *
  * Behavior:
- *  1) plotly_click on a CIP2 tile:
- *     - If the clicked CIP2 is not currently selected:
- *         selects it (sets selectedCip2, updates dropdown)
- *         updates the comparison chart only
- *     - If the clicked CIP2 IS already selected:
- *         clears selection (selectedCip2 -> "", dropdown resets)
- *         clears the comparison chart (message state)
- *
- *  2) plotly_treemaproot (user drills "back" / root changes):
- *     - Clears CIP2 selection and updates comparison chart only.
- *
- *  3) plotly_doubleclick (fallback reset gesture):
- *     - Clears CIP2 selection and updates comparison chart only.
- *
- * Important:
- *  - This function must be called after the first Plotly render so chartEl supports `.on(...)`.
- *  - The `_cip2HandlersAttached` flag prevents duplicate handler binding when using Plotly.react.
+ *  - plotly_click on CIP2 tile toggles selection and updates comparison only
+ *  - plotly_treemaproot clears selection and updates comparison only
+ *  - plotly_doubleclick clears selection and updates comparison only
  */
 function attachTreemapInteractionHandlers() {
   const chartEl = document.getElementById("chart");
-  if (!chartEl || chartEl._cip2HandlersAttached) return;
+  if (!chartEl) return;
 
-  // Click on a treemap tile:
-  // - toggles CIP2 selection
-  // - updates comparison chart only (keeps drilldown intact)
+  // Remove existing listeners to prevent duplicate firing
+  if (typeof chartEl.removeAllListeners === "function") {
+    chartEl.removeAllListeners("plotly_click");
+    chartEl.removeAllListeners("plotly_treemaproot");
+    chartEl.removeAllListeners("plotly_doubleclick");
+  }
+
   chartEl.on("plotly_click", (ev) => {
     const pt = ev?.points?.[0];
     const cip2 = pt?.customdata?.cipCode;
 
-    // Root node has customdata = null; ignore clicks that aren't CIP2 tiles.
+    // Ignore clicks that aren't CIP2 tiles (root has customdata = null)
     if (!cip2) return;
 
     const clicked = String(cip2);
@@ -787,20 +879,17 @@ function attachTreemapInteractionHandlers() {
     updateComparisonOnly();
   });
 
-  // User drills back up to root ("back" control changes the treemap root)
   chartEl.on("plotly_treemaproot", () => {
     clearSelectedCip2();
     updateComparisonOnly();
   });
 
-  // Fallback: double-click often resets the view in Plotly interactions
   chartEl.on("plotly_doubleclick", () => {
     clearSelectedCip2();
     updateComparisonOnly();
   });
-
-  chartEl._cip2HandlersAttached = true;
 }
+
 
 
 // ------------------------------------------------------------
