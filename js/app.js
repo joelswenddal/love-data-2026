@@ -607,7 +607,7 @@ function renderTreemap(aggRows, sel) {
  *  - index.html must contain <div id="comparisonChart"></div>
  *  - That div must have a non-zero height (CSS), otherwise it will appear “missing.”
  */
-function renderInstitutionComparisonChart(compRows, selectedCip2Code, selectedCip2Label) {
+function renderInstitutionComparisonChart(compRows, selectedCip2Code, selectedCip2Label, sel) {
   const elId = "comparisonChart";
 
   if (!ensureElementExists(elId, "Institution comparison chart container")) {
@@ -631,6 +631,25 @@ function renderInstitutionComparisonChart(compRows, selectedCip2Code, selectedCi
     denom: safeNumber(d.denom),
   }));
 
+  function formatFilterLabel(label, value) {
+    return value && value !== "All" ? `${label}: ${value}` : null;
+  }
+
+  const filterLines = [
+    formatFilterLabel("Major", sel?.major),
+    formatFilterLabel("Degree group", sel?.degreeGroup),
+    formatFilterLabel("Award level", sel?.awardLevel),
+  ].filter(Boolean);
+
+  const filterContextHtml =
+    filterLines.length > 0
+      ? "<br><br><span style='font-size:11px;color:#666'>" +
+          "<i>Filters:</i><br>" +
+          filterLines.join("<br>") +
+        "</span>"
+      : "";
+
+
   const trace = {
     type: "bar",
     orientation: "h",
@@ -640,12 +659,15 @@ function renderInstitutionComparisonChart(compRows, selectedCip2Code, selectedCi
     marker: { color: barColor },
 
     // Bar color is set to match the selected CIP2 color in the treemap.
+    
     hovertemplate:
       "<b>%{y}</b><br>" +
       `CIP2: ${selectedCip2Label}<br>` +
       "CIP2 completions: %{customdata.numerator:,.0f}<br>" +
       "Total completions: %{customdata.denom:,.0f}<br>" +
-      "Share: %{x:.2f}%<extra></extra>",
+      "Share: %{x:.2f}%" +
+      filterContextHtml +
+      "<extra></extra>",
   };
   
   const layout = {
@@ -664,24 +686,6 @@ function renderInstitutionComparisonChart(compRows, selectedCip2Code, selectedCi
     // Scale height to number of institutions (keeps labels readable)
     height: Math.max(450, 22 * compRows.length + 140),
   };
-  
-  /** 
-  const layout = {
-    title: { text: `CIP2 share by institution — ${selectedCip2Label}` },
-    margin: { t: 50, l: 300, r: 30, b: 60 },
-    xaxis: {
-      title: "Percent of completions",
-      ticksuffix: "%",
-      rangemode: "tozero"
-    },
-    yaxis: {
-      automargin: true,
-      autorange: "reversed",
-      ticklabelstandoff: 12
-    },
-    height: Math.max(450, 22 * compRows.length + 140),
-  };
-   */
 
   Plotly.react(elId, [trace], layout, { responsive: true });
 }
@@ -755,7 +759,7 @@ function updateComparisonOnly() {
     comparisonEl.innerHTML = "";
   }
 
-  renderInstitutionComparisonChart(comp, cip2Sel, cip2Label);
+  renderInstitutionComparisonChart(comp, cip2Sel, cip2Label, sel);
 
 }
 
@@ -867,6 +871,21 @@ function attachTreemapInteractionHandlers() {
     // Ignore clicks that aren't CIP2 tiles (root has customdata = null)
     if (!cip2) return;
 
+    // Always select (do NOT toggle off on same click)
+    setSelectedCip2(String(cip2));
+
+    // Update comparison only; preserve Plotly drilldown behavior
+    updateComparisonOnly();
+  });
+
+/**
+  chartEl.on("plotly_click", (ev) => {
+    const pt = ev?.points?.[0];
+    const cip2 = pt?.customdata?.cipCode;
+
+    // Ignore clicks that aren't CIP2 tiles (root has customdata = null)
+    if (!cip2) return;
+
     const clicked = String(cip2);
     const current = String(selectedCip2 || "");
 
@@ -878,7 +897,7 @@ function attachTreemapInteractionHandlers() {
 
     updateComparisonOnly();
   });
-
+*/
   chartEl.on("plotly_treemaproot", () => {
     clearSelectedCip2();
     updateComparisonOnly();
