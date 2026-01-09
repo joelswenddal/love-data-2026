@@ -3,114 +3,185 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Big Ten Completions by CIP2 (IPEDS)</title>
+    <title>Big Ten Completions by CIP2 (IPEDS) — Academic Year 2023–2024</title>
+
+    <meta
+      name="description"
+      content="Interactive treemap and institution comparison chart showing Big Ten degree completions by CIP2 area (IPEDS), filtered by major number, degree group, and award level."
+    />
 
     <!-- Plotly (CDN) -->
     <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
 
+    <!-- Site styles -->
     <link rel="stylesheet" href="./css/styles.css" />
-
-    <style>
-      /* Minimal fallback styling in case styles.css is empty */
-      body {
-        font-family: system-ui, Arial, sans-serif;
-        margin: 20px;
-      }
-      .row {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        align-items: end;
-      }
-      .control {
-        min-width: 260px;
-      }
-      label {
-        display: block;
-        font-size: 12px;
-        color: #333;
-        margin-bottom: 4px;
-      }
-      select {
-        width: 100%;
-        padding: 6px;
-      }
-      #chart {
-        width: 100%;
-        height: 720px;
-        margin-top: 12px;
-      }
-      #comparisonChart {
-        width: 100%;
-        height: 720px;
-        margin-top: 18px;
-      }
-
-      .note {
-        max-width: 1100px;
-        color: #444;
-        font-size: 13px;
-        line-height: 1.4;
-        margin-top: 10px;
-      }
-      .error {
-        color: #b00020;
-        font-weight: 600;
-        margin-top: 10px;
-      }
-    </style>
   </head>
 
   <body>
-    <h1>Big Ten Completions by CIP2 (IPEDS) - Academic Year 2023-2024</h1>
+    <!-- =======================================================
+         Header / Intro
+         ======================================================= -->
+    <header class="site-header">
+      <div class="container">
+        <p class="kicker">Love Data Week 2026 — Interactive Visualization</p>
+        <h1 class="title">Big Ten Completions by CIP2 (IPEDS)</h1>
+        <p class="subtitle">Academic Year 2023–2024</p>
 
-    <div class="row">
-      <div class="control">
-        <label for="institutionSelect">Institution</label>
-        <select id="institutionSelect"></select>
+        <div class="lede">
+          <p>
+            This visualization summarizes degree completions across Big Ten institutions,
+            grouped by 2-digit CIP area (CIP2). Use the filters to focus the treemap on a
+            single institution, and compare a selected CIP2 area across all institutions
+            using the bar chart.
+          </p>
+          <p class="interact">
+            <strong>Interact:</strong> Use the dropdown to select a CIP2 area for comparison,
+            or click a treemap tile to select/deselect that area. Hover over any element to
+            view details.
+          </p>
+        </div>
       </div>
+    </header>
 
-      <div class="control">
-        <label for="majorSelect">Major</label>
-        <select id="majorSelect">
-          <option value="First major">Major 1 (Primary major)</option>
-          <option value="Second major">Major 2 (Second major)</option>
-          <option value="All">All (Major 1 + Major 2)</option>
-        </select>
-      </div>
+    <!-- =======================================================
+         Main content
+         ======================================================= -->
+    <main class="container">
+      <!-- Controls -->
+      <section class="controls card" aria-label="Filters">
+        <h2 class="card-title">Filters</h2>
 
-      <div class="control">
-        <label for="degreeGroupSelect">Degree group</label>
-        <select id="degreeGroupSelect">
-          <option value="All">All</option>
-          <option value="Bachelors">Bachelors</option>
-          <option value="Graduate">Graduate</option>
-        </select>
-      </div>
+        <div class="controls-grid">
+          <div class="control">
+            <label for="institutionSelect">Institution</label>
+            <select id="institutionSelect"></select>
+          </div>
 
-      <div class="control">
-        <label for="awardLevelSelect">Award level</label>
-        <select id="awardLevelSelect">
-          <option value="All">All</option>
-        </select>
-      </div>
-    </div>
+          <div class="control">
+            <label for="majorSelect">Major</label>
+            <select id="majorSelect">
+              <option value="First major">Major 1 (Primary major)</option>
+              <option value="Second major">Major 2 (Second major)</option>
+              <option value="All">All (Major 1 + Major 2)</option>
+            </select>
+          </div>
 
-    <div id="chart"></div>
+          <div class="control">
+            <label for="degreeGroupSelect">Degree group</label>
+            <select id="degreeGroupSelect">
+              <option value="All">All</option>
+              <option value="Bachelors">Bachelors</option>
+              <option value="Graduate">Graduate</option>
+            </select>
+          </div>
 
-    <div class="control">
-        <label for="cip2CompareSelect">Compare CIP2 across institutions (filters above still apply)</label>
-        <select id="cip2CompareSelect">
-          <option value="">
-            None selected — choose a CIP2 area to compare institutions
-          </option>
-        </select>
-    </div>
+          <div class="control">
+            <label for="awardLevelSelect">Award level</label>
+            <select id="awardLevelSelect">
+              <option value="All">All</option>
+            </select>
+          </div>
 
-    <div id="comparisonChart"></div>
+          <div class="control control-wide">
+            <label for="cip2CompareSelect">Compare CIP2 across institutions (only applies to Institution Comparison chart)</label>
+            <select id="cip2CompareSelect">
+              <!-- app.js populates options -->
+              <option value="">
+                None selected — choose a CIP2 area to compare institutions
+              </option>
+            </select>
+            <p class="help">
+              Tip: You can also click a treemap tile to select/deselect a CIP2 area.
+            </p>
+          </div>
+        </div>
 
-    <div id="error" class="error" style="display: none"></div>
-    <p class="note" id="note"></p>
+        <div id="error" class="error" role="alert" aria-live="polite" style="display: none"></div>
+      </section>
+
+      <!-- Treemap -->
+      <section class="viz card" aria-label="Treemap">
+        <div class="viz-header">
+          <h2 class="card-title">CIP2 composition within an institution</h2>
+          <p class="card-subtitle">
+            Tile size represents completions. Hover for full CIP title and counts.
+          </p>
+        </div>
+
+        <div id="chart" class="plot" aria-label="Treemap chart"></div>
+
+        <div class="viz-footnote" id="treemapNote">
+          <!-- Optional: app.js can inject short status notes here if you want -->
+        </div>
+      </section>
+
+      <!-- Comparison bar chart -->
+      <section class="viz card" aria-label="Institution comparison">
+        <div class="viz-header">
+          <h2 class="card-title">Institution comparison for selected CIP2</h2>
+          <p class="card-subtitle">
+            Shows the percent of completions in the selected CIP2 area for each institution,
+            using the same Major / Degree group / Award level filters.
+          </p>
+        </div>
+
+        <div id="comparisonChart" class="plot" aria-label="Comparison bar chart">
+          <!-- app.js may inject an instructional message here when nothing is selected -->
+        </div>
+      </section>
+
+      <!-- Data & Methods -->
+      <section class="card prose" aria-label="Data and methodology">
+        <h2 class="card-title">Data & methodology</h2>
+
+        <h3>Data source</h3>
+        <p>
+          Data are based on IPEDS completions, aggregated to the CIP2 level. Counts reflect the
+          rows included in the published dataset used by this page.
+        </p>
+
+        <h3>How to read the visuals</h3>
+        <ul>
+          <li>
+            <strong>Treemap:</strong> within the selected institution, each tile is a CIP2 area.
+            The tile’s area is proportional to completions under the current filters.
+          </li>
+          <li>
+            <strong>Comparison chart:</strong> for the selected CIP2, each bar is:
+            <em>(CIP2 completions) ÷ (total completions)</em> for that institution under the same
+            non-institution filters.
+          </li>
+        </ul>
+
+        <h3>Filters</h3>
+        <ul>
+          <li><strong>Major:</strong> Major 1, Major 2, or All (combined).</li>
+          <li><strong>Degree group:</strong> Category grouping for award types.</li>
+          <li><strong>Award level:</strong> Award-level detail (or All).</li>
+        </ul>
+
+        <h3>Notes & limitations</h3>
+        <ul>
+          <li>
+            Color is mapped deterministically by CIP2 code for consistency across sessions.
+            This supports comparison but does not imply ranking or magnitude.
+          </li>
+          <li>
+            The comparison chart is intended for “share of completions” comparisons; it is not
+            a count chart. Use hover tooltips for numerator/denominator values.
+          </li>
+        </ul>
+
+        <p class="note" id="note"></p>
+      </section>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <p>
+          Built with Plotly.js. Dataset processing and visualization code maintained in the project repository.
+        </p>
+      </footer>
+    </main>
 
     <!-- Your app script -->
     <script src="./js/app.js"></script>
