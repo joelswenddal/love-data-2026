@@ -15,6 +15,13 @@
 
     <!-- Site styles -->
     <link rel="stylesheet" href="./css/styles.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
   </head>
 
   <body>
@@ -29,44 +36,77 @@
         </h1>
         <p class="subtitle">Big Ten Completions by CIP (IPEDS)</p>
 
+        <div class="header-actions" aria-label="Jump to section">
+          <a class="button-link primary" href="#filters">Start: Filters</a>
+          <a class="button-link" href="#figure1">Figure 1</a>
+          <a class="button-link" href="#figure2">Figure 2</a>
+          <a class="button-link" href="#methods">Data & methodology</a>
+        </div>
+
         <div class="lede">
-          <p>
+          <p class="summary">
             <strong
-              >How do Big Ten univerisites differ in what fields they graduate
+              >How do Big Ten universities differ in what fields they graduate
               students from?</strong
             >
+            This visualization uses IPEDS degree completions (Academic Year
+            2023–2024), grouped into CIP2 fields of study, to profile each
+            institution and compare institutions on a selected field.
           </p>
-          <p>
-            This visualization summarizes degree completions across Big Ten
-            institutions, categorized according to generalized groupings of
-            academic programs. CIP stands for Classification of Instructional
-            Programs, a taxonomy used by the U.S. Department of Education to
-            categorize academic programs and fields of study across US
-            universities. Completion counts reported to IPEDS for each CIP2
-            category are used to show the distribution of graduates by field of
-            study within each institution, as well as to compare the share of
-            graduates in a selected field across all Big Ten institutions.
-          </p>
-          <p>
-            The treemap (Figure 1) shows the composition of degree completions
-            within a selected institution, while the bar chart (Figure 2) allows
-            comparison of a selected field of study (CIP2 category) across all
-            Big Ten institutions. Note that students with multiple majors are
-            counted in each relevant CIP2 category.
-          </p>
-          <p>
-            Use the filters to focus the treemap (Figure 1) on a single
-            institution, and compare a selected field of study across all
-            institutions using the bar chart (Figure 2).
-          </p>
-          <p class="interact">
-            <strong>Interact:</strong> Use the Institution dropdown to select a
-            university. Use the Major dropdown to filter by primary major,
-            secondary major, or both combined. Use the Degree group and Award
-            level dropdowns to further refine the data shown. Use the dropdown
-            to select a CIP2 area for comparison, or click a treemap tile to
-            select/deselect that area. Hover over any element to view details.
-          </p>
+
+          <div class="quickstart" aria-label="Quick start">
+            <h2>Quick start</h2>
+            <ul>
+              <li>
+                <strong>Select an institution</strong> to populate Figure 1
+                (treemap).
+              </li>
+              <li>
+                <strong>Choose Major / Degree group / Award level</strong> to
+                refine both charts.
+              </li>
+              <li>
+                <strong>Select a CIP2 field</strong> (or click a treemap tile)
+                to populate Figure 2 (comparison).
+              </li>
+              <li>
+                <strong>Hover</strong> for counts and percentages; click a tile
+                again to deselect.
+              </li>
+            </ul>
+          </div>
+
+          <details class="details">
+            <summary>
+              Read more: definitions, how to read the charts, and counting rules
+            </summary>
+            <div class="details-body">
+              <p>
+                CIP stands for
+                <em>Classification of Instructional Programs</em>, a taxonomy
+                used by the U.S. Department of Education to categorize academic
+                programs and fields of study across U.S. universities.
+                Completion counts reported to IPEDS for each CIP2 category are
+                used to show the distribution of graduates by field of study
+                within each institution, as well as to compare the share of
+                graduates in a selected field across all Big Ten institutions.
+              </p>
+
+              <p>
+                <strong>Figure 1 (Treemap)</strong> shows the
+                <em>composition</em> of completions within a selected
+                institution. <strong>Figure 2 (Comparison)</strong> shows the
+                <em>share of completions</em> in a selected CIP2 field across
+                all institutions under the same filters.
+              </p>
+
+              <p>
+                <strong>Counting note:</strong> students with multiple majors
+                are counted in each relevant CIP2 category, consistent with how
+                completions are reported by CIP.
+              </p>
+            </div>
+          </details>
         </div>
       </div>
     </header>
@@ -76,7 +116,7 @@
          ======================================================= -->
     <main class="container">
       <!-- Controls -->
-      <section class="controls card" aria-label="Filters">
+      <section id="filters" class="controls card" aria-label="Filters">
         <h2 class="card-title">Filters</h2>
 
         <div class="controls-grid">
@@ -110,11 +150,9 @@
             </select>
           </div>
 
-          <!-- Drop down for reset button -->
-          <div class="row" style="margin-top: 10px">
-            <div class="control">
-              <button id="resetFiltersBtn" type="button">Reset filters</button>
-            </div>
+          <div class="control">
+            <label>&nbsp;</label>
+            <button id="resetFiltersBtn" type="button">Reset filters</button>
           </div>
 
           <div class="control control-wide">
@@ -133,6 +171,11 @@
               area.
             </p>
           </div>
+          <div class="control control-wide">
+            <p id="filterStatus" class="help" aria-live="polite">
+              STATUS LINE TEST
+            </p>
+          </div>
         </div>
 
         <div
@@ -145,7 +188,7 @@
       </section>
 
       <!-- Treemap -->
-      <section class="viz card" aria-label="Treemap">
+      <section id="figure1" class="viz card" aria-label="Treemap">
         <div class="viz-header">
           <h2 class="card-title">
             Figure 1. Completion percentages by CIP Field of Study within an
@@ -165,7 +208,11 @@
       </section>
 
       <!-- Comparison bar chart -->
-      <section class="viz card" aria-label="Institution comparison">
+      <section
+        id="figure2"
+        class="viz card"
+        aria-label="Institution comparison"
+      >
         <div class="viz-header">
           <h2 class="card-title">
             Figure 2. Institution comparison for selected CIP Field of Study
@@ -182,12 +229,19 @@
           class="plot"
           aria-label="Comparison bar chart"
         >
-          <!-- app.js may inject an instructional message here when nothing is selected -->
+          <div id="comparisonEmptyState" class="empty-state">
+            Select a CIP2 field above (or click a treemap tile) to compare
+            institutions.
+          </div>
         </div>
       </section>
 
       <!-- Data & Methods -->
-      <section class="card prose" aria-label="Data and methodology">
+      <section
+        id="methods"
+        class="card prose"
+        aria-label="Data and methodology"
+      >
         <h2 class="card-title">Data & methodology</h2>
 
         <h3>Data source</h3>
