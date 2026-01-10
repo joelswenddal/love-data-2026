@@ -150,6 +150,20 @@ select {
   grid-column: 1 / -1;
 }
 
+/* Reset button */
+#resetFiltersBtn {
+  padding: 8px 12px;
+  border: 1px solid #cfcfcf;
+  background: #f7f7f7;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#resetFiltersBtn:hover {
+  background: #efefef;
+}
+
+
 /* Responsive controls */
 @media (max-width: 920px) {
   .controls-grid {

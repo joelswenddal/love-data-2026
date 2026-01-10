@@ -58,6 +58,50 @@ function clearSelectedCip2() {
 }
 
 // ------------------------------------------------------------
+// Reset filters to defaults
+// ------------------------------------------------------------
+
+function resetFilters() {
+  clearError();
+
+  // --- Reset main filters
+  const instEl = document.getElementById("institutionSelect");
+  const majorEl = document.getElementById("majorSelect");
+  const degreeEl = document.getElementById("degreeGroupSelect");
+  const awardEl = document.getElementById("awardLevelSelect");
+  const cip2El = document.getElementById("cip2CompareSelect");
+
+  // Institution default: UIUC if present; else first option
+  if (instEl) {
+    const uiuc = "University of Illinois Urbana-Champaign";
+    const hasUiuc = [...instEl.options].some((o) => o.value === uiuc);
+    instEl.value = hasUiuc ? uiuc : instEl.options[0]?.value || "";
+  }
+
+  // Major default: first option in the HTML (Major 1)
+  if (majorEl) majorEl.value = majorEl.options[0]?.value || "First major";
+
+  // Degree group default: "All" if present, else first option
+  if (degreeEl) {
+    const hasAll = [...degreeEl.options].some((o) => o.value === "All");
+    degreeEl.value = hasAll ? "All" : degreeEl.options[0]?.value || "";
+  }
+
+  // Award level default: "All" if present, else first option
+  if (awardEl) {
+    const hasAll = [...awardEl.options].some((o) => o.value === "All");
+    awardEl.value = hasAll ? "All" : awardEl.options[0]?.value || "";
+  }
+
+  // --- Reset CIP2 comparison selection (shared state + dropdown)
+  clearSelectedCip2();
+  if (cip2El) cip2El.value = "";
+
+  // --- Re-render everything (treemap + comparison message)
+  updateViz();
+}
+
+// ------------------------------------------------------------
 // 1) Color palette + deterministic CIP2->color mapping
 // ------------------------------------------------------------
 
@@ -89,7 +133,6 @@ const CIP_PALETTE = [
   "#A68C8A", // muted warm taupe
   "#5F5F5F", // dark neutral grey
 ];
-
 
 let cipColorMap = new Map();
 
@@ -327,7 +370,10 @@ function populateCip2CompareControl(rows) {
   }
 
   const options = [...byCode.entries()]
-    .map(([code, title]) => ({ code: String(code), title: String(title ?? "") }))
+    .map(([code, title]) => ({
+      code: String(code),
+      title: String(title ?? ""),
+    }))
     .sort((a, b) => a.code.localeCompare(b.code, undefined, { numeric: true }));
 
   const sel = document.getElementById("cip2CompareSelect");
@@ -480,7 +526,7 @@ function buildInstitutionComparison(rowsAllInst, selectedCip2Code) {
   }));
 
   out.sort(
-    (a, b) => (b.share - a.share) || a.institution.localeCompare(b.institution)
+    (a, b) => b.share - a.share || a.institution.localeCompare(b.institution)
   );
 
   return out;
@@ -498,7 +544,7 @@ function buildInstitutionComparison(rowsAllInst, selectedCip2Code) {
  * Uses customdata to store full cipTitle for tooltips and click handling.
  * Renders via Plotly.react for efficient updates.
  * Clears previous error messages on success.
-  */
+ */
 
 function renderTreemap(aggRows, sel) {
   if (!ensureElementExists("chart", "Treemap container")) return;
@@ -543,13 +589,12 @@ function renderTreemap(aggRows, sel) {
   ].filter(Boolean);
 
   const filterContextHtml =
-  filterLines.length > 0
-    ? "<br><br><span style='font-size:11px'>" +
+    filterLines.length > 0
+      ? "<br><br><span style='font-size:11px'>" +
         "<i>Filters:</i><br>" +
         filterLines.join("<br>") +
-      "</span>"
-    : "";
-
+        "</span>"
+      : "";
 
   // ------------------------------------------------------------
   // Treemap trace
@@ -583,7 +628,6 @@ function renderTreemap(aggRows, sel) {
 
   // IMPORTANT: Plotly.react can drop listeners in some updates, so rebind after render.
   attachTreemapInteractionHandlers();
-
 }
 
 // ------------------------------------------------------------
@@ -607,7 +651,12 @@ function renderTreemap(aggRows, sel) {
  *  - index.html must contain <div id="comparisonChart"></div>
  *  - That div must have a non-zero height (CSS), otherwise it will appear “missing.”
  */
-function renderInstitutionComparisonChart(compRows, selectedCip2Code, selectedCip2Label, sel) {
+function renderInstitutionComparisonChart(
+  compRows,
+  selectedCip2Code,
+  selectedCip2Label,
+  sel
+) {
   const elId = "comparisonChart";
 
   if (!ensureElementExists(elId, "Institution comparison chart container")) {
@@ -623,7 +672,7 @@ function renderInstitutionComparisonChart(compRows, selectedCip2Code, selectedCi
   const barColor = cipColorMap.get(String(selectedCip2Code)) || "#1f77b4"; // Plotly default fallback
 
   const y = compRows.map((d) => d.institution);
-  const x = compRows.map((d) => (safeNumber(d.share) * 100)); // percent
+  const x = compRows.map((d) => safeNumber(d.share) * 100); // percent
 
   const customdata = compRows.map((d) => ({
     unitId: d.unitId,
@@ -644,11 +693,10 @@ function renderInstitutionComparisonChart(compRows, selectedCip2Code, selectedCi
   const filterContextHtml =
     filterLines.length > 0
       ? "<br><br><span style='font-size:11px;color:#666'>" +
-          "<i>Filters:</i><br>" +
-          filterLines.join("<br>") +
+        "<i>Filters:</i><br>" +
+        filterLines.join("<br>") +
         "</span>"
       : "";
-
 
   const trace = {
     type: "bar",
@@ -659,7 +707,7 @@ function renderInstitutionComparisonChart(compRows, selectedCip2Code, selectedCi
     marker: { color: barColor },
 
     // Bar color is set to match the selected CIP2 color in the treemap.
-    
+
     hovertemplate:
       "<b>%{y}</b><br>" +
       `CIP2: ${selectedCip2Label}<br>` +
@@ -669,7 +717,7 @@ function renderInstitutionComparisonChart(compRows, selectedCip2Code, selectedCi
       filterContextHtml +
       "<extra></extra>",
   };
-  
+
   const layout = {
     title: { text: `CIP2 share by institution — ${selectedCip2Label}` },
     margin: { t: 50, l: 300, r: 30, b: 60 },
@@ -689,9 +737,6 @@ function renderInstitutionComparisonChart(compRows, selectedCip2Code, selectedCi
 
   Plotly.react(elId, [trace], layout, { responsive: true });
 }
-
-
-
 
 // ------------------------------------------------------------
 // 10) Comparison-only controller
@@ -760,7 +805,6 @@ function updateComparisonOnly() {
   }
 
   renderInstitutionComparisonChart(comp, cip2Sel, cip2Label, sel);
-
 }
 
 // ------------------------------------------------------------
@@ -814,12 +858,16 @@ function updateViz() {
  * Dropdown change updates shared state for CIP2.
  */
 function attachEventHandlers() {
+  if (window.__handlersAttached) return;
+  window.__handlersAttached = true;
+
   const ids = [
     "institutionSelect",
     "majorSelect",
     "degreeGroupSelect",
     "awardLevelSelect",
   ];
+
   for (const id of ids) {
     const el = document.getElementById(id);
     if (el) el.addEventListener("change", updateViz);
@@ -829,8 +877,13 @@ function attachEventHandlers() {
   if (cip2El) {
     cip2El.addEventListener("change", () => {
       setSelectedCip2(cip2El.value);
-      updateViz();
+      updateComparisonOnly();
     });
+  }
+
+  const resetBtn = document.getElementById("resetFiltersBtn");
+  if (resetBtn) {
+    resetBtn.addEventListener("click", resetFilters);
   }
 }
 
@@ -878,7 +931,7 @@ function attachTreemapInteractionHandlers() {
     updateComparisonOnly();
   });
 
-/**
+  /**
   chartEl.on("plotly_click", (ev) => {
     const pt = ev?.points?.[0];
     const cip2 = pt?.customdata?.cipCode;
@@ -908,8 +961,6 @@ function attachTreemapInteractionHandlers() {
     updateComparisonOnly();
   });
 }
-
-
 
 // ------------------------------------------------------------
 // 14) App entrypoint
