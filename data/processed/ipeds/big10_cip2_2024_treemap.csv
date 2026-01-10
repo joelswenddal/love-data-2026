@@ -1,7 +1,4 @@
-Unit ID,Institution,Year,Major Number,Degree Group,Award Level,CIP Code,CIP Title,Total Completions
-151351,Indiana University-Bloomington,2024,First major,Associates,Associate's degree,10,Communications Technologies/Technicians and Support Services,0
-151351,Indiana University-Bloomington,2024,First major,Associates,Associate's degree,47,Mechanic and Repair Technologies/Technicians,0
-151351,Indiana University-Bloomington,2024,First major,Associates,Associate's degree,52,"Business, Management, Marketing, and Related Support Services",0
+unitId,institution,year,majorNumber,degreeGroup,awardLevel,cipCode,cipTitle,totalCompletions
 151351,Indiana University-Bloomington,2024,First major,Bachelors,Bachelor's degree,03,Natural Resources and Conservation,76
 151351,Indiana University-Bloomington,2024,First major,Bachelors,Bachelor's degree,04,Architecture and Related Services,24
 151351,Indiana University-Bloomington,2024,First major,Bachelors,Bachelor's degree,05,"Area, Ethnic, Cultural, Gender, and Group Studies",15
@@ -79,8 +76,6 @@ Unit ID,Institution,Year,Major Number,Degree Group,Award Level,CIP Code,CIP Titl
 151351,Indiana University-Bloomington,2024,First major,Graduate,Master's degree,51,Health Professions and Related Programs,136
 151351,Indiana University-Bloomington,2024,First major,Graduate,Master's degree,52,"Business, Management, Marketing, and Related Support Services",1248
 151351,Indiana University-Bloomington,2024,First major,Graduate,Master's degree,54,History,11
-151351,Indiana University-Bloomington,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,22,Legal Professions and Studies,200
-151351,Indiana University-Bloomington,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,51,Health Professions and Related Programs,92
 151351,Indiana University-Bloomington,2024,Second major,Bachelors,Bachelor's degree,05,"Area, Ethnic, Cultural, Gender, and Group Studies",11
 151351,Indiana University-Bloomington,2024,Second major,Bachelors,Bachelor's degree,11,Computer and Information Sciences and Support Services,1
 151351,Indiana University-Bloomington,2024,Second major,Bachelors,Bachelor's degree,16,"Foreign Languages, Literatures, and Linguistics",71
@@ -187,9 +182,6 @@ Unit ID,Institution,Year,Major Number,Degree Group,Award Level,CIP Code,CIP Titl
 171100,Michigan State University,2024,First major,Graduate,Master's degree,51,Health Professions and Related Programs,321
 171100,Michigan State University,2024,First major,Graduate,Master's degree,52,"Business, Management, Marketing, and Related Support Services",644
 171100,Michigan State University,2024,First major,Graduate,Master's degree,54,History,0
-171100,Michigan State University,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,01,Agricultural/Animal/Plant/Veterinary Science and Related Fields,107
-171100,Michigan State University,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,22,Legal Professions and Studies,255
-171100,Michigan State University,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,51,Health Professions and Related Programs,505
 171100,Michigan State University,2024,Second major,Bachelors,Bachelor's degree,01,Agricultural/Animal/Plant/Veterinary Science and Related Fields,2
 171100,Michigan State University,2024,Second major,Bachelors,Bachelor's degree,03,Natural Resources and Conservation,2
 171100,Michigan State University,2024,Second major,Bachelors,Bachelor's degree,05,"Area, Ethnic, Cultural, Gender, and Group Studies",2
@@ -295,8 +287,6 @@ Unit ID,Institution,Year,Major Number,Degree Group,Award Level,CIP Code,CIP Titl
 147767,Northwestern University,2024,First major,Graduate,Master's degree,51,Health Professions and Related Programs,368
 147767,Northwestern University,2024,First major,Graduate,Master's degree,52,"Business, Management, Marketing, and Related Support Services",1885
 147767,Northwestern University,2024,First major,Graduate,Master's degree,54,History,9
-147767,Northwestern University,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,22,Legal Professions and Studies,293
-147767,Northwestern University,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,51,Health Professions and Related Programs,249
 147767,Northwestern University,2024,Second major,Bachelors,Bachelor's degree,03,Natural Resources and Conservation,8
 147767,Northwestern University,2024,Second major,Bachelors,Bachelor's degree,05,"Area, Ethnic, Cultural, Gender, and Group Studies",13
 147767,Northwestern University,2024,Second major,Bachelors,Bachelor's degree,11,Computer and Information Sciences and Support Services,17
@@ -316,8 +306,6 @@ Unit ID,Institution,Year,Major Number,Degree Group,Award Level,CIP Code,CIP Titl
 147767,Northwestern University,2024,Second major,Bachelors,Bachelor's degree,51,Health Professions and Related Programs,54
 147767,Northwestern University,2024,Second major,Bachelors,Bachelor's degree,54,History,29
 147767,Northwestern University,2024,Second major,Graduate,Master's degree,52,"Business, Management, Marketing, and Related Support Services",689
-204796,Ohio State University-Main Campus,2024,First major,Associates,Associate's degree,13,Education,3
-204796,Ohio State University-Main Campus,2024,First major,Associates,Associate's degree,24,"Liberal Arts and Sciences, General Studies and Humanities",0
 204796,Ohio State University-Main Campus,2024,First major,Bachelors,Bachelor's degree,01,Agricultural/Animal/Plant/Veterinary Science and Related Fields,283
 204796,Ohio State University-Main Campus,2024,First major,Bachelors,Bachelor's degree,03,Natural Resources and Conservation,218
 204796,Ohio State University-Main Campus,2024,First major,Bachelors,Bachelor's degree,04,Architecture and Related Services,99
@@ -398,9 +386,6 @@ Unit ID,Institution,Year,Major Number,Degree Group,Award Level,CIP Code,CIP Titl
 204796,Ohio State University-Main Campus,2024,First major,Graduate,Master's degree,51,Health Professions and Related Programs,552
 204796,Ohio State University-Main Campus,2024,First major,Graduate,Master's degree,52,"Business, Management, Marketing, and Related Support Services",344
 204796,Ohio State University-Main Campus,2024,First major,Graduate,Master's degree,54,History,5
-204796,Ohio State University-Main Campus,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,01,Agricultural/Animal/Plant/Veterinary Science and Related Fields,168
-204796,Ohio State University-Main Campus,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,22,Legal Professions and Studies,179
-204796,Ohio State University-Main Campus,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,51,Health Professions and Related Programs,494
 204796,Ohio State University-Main Campus,2024,Second major,Bachelors,Bachelor's degree,01,Agricultural/Animal/Plant/Veterinary Science and Related Fields,1
 204796,Ohio State University-Main Campus,2024,Second major,Bachelors,Bachelor's degree,04,Architecture and Related Services,1
 204796,Ohio State University-Main Campus,2024,Second major,Bachelors,Bachelor's degree,05,"Area, Ethnic, Cultural, Gender, and Group Studies",12
@@ -421,9 +406,6 @@ Unit ID,Institution,Year,Major Number,Degree Group,Award Level,CIP Code,CIP Titl
 204796,Ohio State University-Main Campus,2024,Second major,Bachelors,Bachelor's degree,50,Visual and Performing Arts,10
 204796,Ohio State University-Main Campus,2024,Second major,Bachelors,Bachelor's degree,52,"Business, Management, Marketing, and Related Support Services",139
 204796,Ohio State University-Main Campus,2024,Second major,Bachelors,Bachelor's degree,54,History,13
-214777,Pennsylvania State University-Main Campus,2024,First major,Associates,Associate's degree,13,Education,3
-214777,Pennsylvania State University-Main Campus,2024,First major,Associates,Associate's degree,24,"Liberal Arts and Sciences, General Studies and Humanities",2
-214777,Pennsylvania State University-Main Campus,2024,First major,Associates,Associate's degree,43,"Homeland Security, Law Enforcement, Firefighting and Related Protective Services",0
 214777,Pennsylvania State University-Main Campus,2024,First major,Bachelors,Bachelor's degree,01,Agricultural/Animal/Plant/Veterinary Science and Related Fields,403
 214777,Pennsylvania State University-Main Campus,2024,First major,Bachelors,Bachelor's degree,03,Natural Resources and Conservation,78
 214777,Pennsylvania State University-Main Campus,2024,First major,Bachelors,Bachelor's degree,04,Architecture and Related Services,93
@@ -499,10 +481,6 @@ Unit ID,Institution,Year,Major Number,Degree Group,Award Level,CIP Code,CIP Titl
 214777,Pennsylvania State University-Main Campus,2024,First major,Graduate,Master's degree,51,Health Professions and Related Programs,112
 214777,Pennsylvania State University-Main Campus,2024,First major,Graduate,Master's degree,52,"Business, Management, Marketing, and Related Support Services",410
 214777,Pennsylvania State University-Main Campus,2024,First major,Graduate,Master's degree,54,History,2
-214777,Pennsylvania State University-Main Campus,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,22,Legal Professions and Studies,230
-214777,Pennsylvania State University-Main Campus,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,51,Health Professions and Related Programs,135
-243780,Purdue University-Main Campus,2024,First major,Associates,Associate's degree,01,Agricultural/Animal/Plant/Veterinary Science and Related Fields,67
-243780,Purdue University-Main Campus,2024,First major,Associates,Associate's degree,15,Engineering/Engineering-related Technologies/Technicians,3
 243780,Purdue University-Main Campus,2024,First major,Bachelors,Bachelor's degree,01,Agricultural/Animal/Plant/Veterinary Science and Related Fields,431
 243780,Purdue University-Main Campus,2024,First major,Bachelors,Bachelor's degree,03,Natural Resources and Conservation,104
 243780,Purdue University-Main Campus,2024,First major,Bachelors,Bachelor's degree,04,Architecture and Related Services,17
@@ -575,13 +553,7 @@ Unit ID,Institution,Year,Major Number,Degree Group,Award Level,CIP Code,CIP Titl
 243780,Purdue University-Main Campus,2024,First major,Graduate,Master's degree,51,Health Professions and Related Programs,184
 243780,Purdue University-Main Campus,2024,First major,Graduate,Master's degree,52,"Business, Management, Marketing, and Related Support Services",449
 243780,Purdue University-Main Campus,2024,First major,Graduate,Master's degree,54,History,3
-243780,Purdue University-Main Campus,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,01,Agricultural/Animal/Plant/Veterinary Science and Related Fields,74
-243780,Purdue University-Main Campus,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,14,Engineering,0
-243780,Purdue University-Main Campus,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,15,Engineering/Engineering-related Technologies/Technicians,18
-243780,Purdue University-Main Campus,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,26,Biological and Biomedical Sciences,0
-243780,Purdue University-Main Campus,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,51,Health Professions and Related Programs,167
 243780,Purdue University-Main Campus,2024,Second major,Bachelors,Bachelor's degree,03,Natural Resources and Conservation,2
-186380,Rutgers University-New Brunswick,2024,First major,Associates,Associate's degree,51,Health Professions and Related Programs,27
 186380,Rutgers University-New Brunswick,2024,First major,Bachelors,Bachelor's degree,01,Agricultural/Animal/Plant/Veterinary Science and Related Fields,128
 186380,Rutgers University-New Brunswick,2024,First major,Bachelors,Bachelor's degree,03,Natural Resources and Conservation,101
 186380,Rutgers University-New Brunswick,2024,First major,Bachelors,Bachelor's degree,04,Architecture and Related Services,39
@@ -654,9 +626,6 @@ Unit ID,Institution,Year,Major Number,Degree Group,Award Level,CIP Code,CIP Titl
 186380,Rutgers University-New Brunswick,2024,First major,Graduate,Master's degree,51,Health Professions and Related Programs,531
 186380,Rutgers University-New Brunswick,2024,First major,Graduate,Master's degree,52,"Business, Management, Marketing, and Related Support Services",138
 186380,Rutgers University-New Brunswick,2024,First major,Graduate,Master's degree,54,History,8
-186380,Rutgers University-New Brunswick,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,44,Public Administration and Social Service Professions,0
-186380,Rutgers University-New Brunswick,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,50,Visual and Performing Arts,20
-186380,Rutgers University-New Brunswick,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,51,Health Professions and Related Programs,608
 110662,University of California-Los Angeles,2024,First major,Bachelors,Bachelor's degree,03,Natural Resources and Conservation,126
 110662,University of California-Los Angeles,2024,First major,Bachelors,Bachelor's degree,04,Architecture and Related Services,17
 110662,University of California-Los Angeles,2024,First major,Bachelors,Bachelor's degree,05,"Area, Ethnic, Cultural, Gender, and Group Studies",174
@@ -723,8 +692,6 @@ Unit ID,Institution,Year,Major Number,Degree Group,Award Level,CIP Code,CIP Titl
 110662,University of California-Los Angeles,2024,First major,Graduate,Master's degree,51,Health Professions and Related Programs,377
 110662,University of California-Los Angeles,2024,First major,Graduate,Master's degree,52,"Business, Management, Marketing, and Related Support Services",944
 110662,University of California-Los Angeles,2024,First major,Graduate,Master's degree,54,History,9
-110662,University of California-Los Angeles,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,22,Legal Professions and Studies,372
-110662,University of California-Los Angeles,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,51,Health Professions and Related Programs,282
 110662,University of California-Los Angeles,2024,Second major,Bachelors,Bachelor's degree,04,Architecture and Related Services,3
 110662,University of California-Los Angeles,2024,Second major,Bachelors,Bachelor's degree,05,"Area, Ethnic, Cultural, Gender, and Group Studies",62
 110662,University of California-Los Angeles,2024,Second major,Bachelors,Bachelor's degree,09,"Communication, Journalism, and Related Programs",38
@@ -816,9 +783,6 @@ Unit ID,Institution,Year,Major Number,Degree Group,Award Level,CIP Code,CIP Titl
 145637,University of Illinois Urbana-Champaign,2024,First major,Graduate,Master's degree,51,Health Professions and Related Programs,75
 145637,University of Illinois Urbana-Champaign,2024,First major,Graduate,Master's degree,52,"Business, Management, Marketing, and Related Support Services",2569
 145637,University of Illinois Urbana-Champaign,2024,First major,Graduate,Master's degree,54,History,6
-145637,University of Illinois Urbana-Champaign,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,01,Agricultural/Animal/Plant/Veterinary Science and Related Fields,128
-145637,University of Illinois Urbana-Champaign,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,22,Legal Professions and Studies,203
-145637,University of Illinois Urbana-Champaign,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,51,Health Professions and Related Programs,43
 145637,University of Illinois Urbana-Champaign,2024,Second major,Bachelors,Bachelor's degree,01,Agricultural/Animal/Plant/Veterinary Science and Related Fields,3
 145637,University of Illinois Urbana-Champaign,2024,Second major,Bachelors,Bachelor's degree,03,Natural Resources and Conservation,1
 145637,University of Illinois Urbana-Champaign,2024,Second major,Bachelors,Bachelor's degree,05,"Area, Ethnic, Cultural, Gender, and Group Studies",15
@@ -899,8 +863,6 @@ Unit ID,Institution,Year,Major Number,Degree Group,Award Level,CIP Code,CIP Titl
 153658,University of Iowa,2024,First major,Graduate,Master's degree,51,Health Professions and Related Programs,236
 153658,University of Iowa,2024,First major,Graduate,Master's degree,52,"Business, Management, Marketing, and Related Support Services",690
 153658,University of Iowa,2024,First major,Graduate,Master's degree,54,History,2
-153658,University of Iowa,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,22,Legal Professions and Studies,173
-153658,University of Iowa,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,51,Health Professions and Related Programs,319
 153658,University of Iowa,2024,Second major,Bachelors,Bachelor's degree,03,Natural Resources and Conservation,7
 153658,University of Iowa,2024,Second major,Bachelors,Bachelor's degree,05,"Area, Ethnic, Cultural, Gender, and Group Studies",9
 153658,University of Iowa,2024,Second major,Bachelors,Bachelor's degree,09,"Communication, Journalism, and Related Programs",13
@@ -995,8 +957,6 @@ Unit ID,Institution,Year,Major Number,Degree Group,Award Level,CIP Code,CIP Titl
 163286,University of Maryland-College Park,2024,First major,Graduate,Master's degree,51,Health Professions and Related Programs,149
 163286,University of Maryland-College Park,2024,First major,Graduate,Master's degree,52,"Business, Management, Marketing, and Related Support Services",684
 163286,University of Maryland-College Park,2024,First major,Graduate,Master's degree,54,History,16
-163286,University of Maryland-College Park,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,01,Agricultural/Animal/Plant/Veterinary Science and Related Fields,28
-163286,University of Maryland-College Park,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,51,Health Professions and Related Programs,8
 163286,University of Maryland-College Park,2024,Second major,Bachelors,Bachelor's degree,01,Agricultural/Animal/Plant/Veterinary Science and Related Fields,1
 163286,University of Maryland-College Park,2024,Second major,Bachelors,Bachelor's degree,05,"Area, Ethnic, Cultural, Gender, and Group Studies",2
 163286,University of Maryland-College Park,2024,Second major,Bachelors,Bachelor's degree,09,"Communication, Journalism, and Related Programs",9
@@ -1087,8 +1047,6 @@ Unit ID,Institution,Year,Major Number,Degree Group,Award Level,CIP Code,CIP Titl
 170976,University of Michigan-Ann Arbor,2024,First major,Graduate,Master's degree,51,Health Professions and Related Programs,404
 170976,University of Michigan-Ann Arbor,2024,First major,Graduate,Master's degree,52,"Business, Management, Marketing, and Related Support Services",970
 170976,University of Michigan-Ann Arbor,2024,First major,Graduate,Master's degree,54,History,6
-170976,University of Michigan-Ann Arbor,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,22,Legal Professions and Studies,323
-170976,University of Michigan-Ann Arbor,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,51,Health Professions and Related Programs,445
 170976,University of Michigan-Ann Arbor,2024,Second major,Bachelors,Bachelor's degree,03,Natural Resources and Conservation,28
 170976,University of Michigan-Ann Arbor,2024,Second major,Bachelors,Bachelor's degree,05,"Area, Ethnic, Cultural, Gender, and Group Studies",36
 170976,University of Michigan-Ann Arbor,2024,Second major,Bachelors,Bachelor's degree,09,"Communication, Journalism, and Related Programs",22
@@ -1181,11 +1139,6 @@ Unit ID,Institution,Year,Major Number,Degree Group,Award Level,CIP Code,CIP Titl
 174066,University of Minnesota-Twin Cities,2024,First major,Graduate,Master's degree,51,Health Professions and Related Programs,431
 174066,University of Minnesota-Twin Cities,2024,First major,Graduate,Master's degree,52,"Business, Management, Marketing, and Related Support Services",458
 174066,University of Minnesota-Twin Cities,2024,First major,Graduate,Master's degree,54,History,5
-174066,University of Minnesota-Twin Cities,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,01,Agricultural/Animal/Plant/Veterinary Science and Related Fields,105
-174066,University of Minnesota-Twin Cities,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,13,Education,0
-174066,University of Minnesota-Twin Cities,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,22,Legal Professions and Studies,231
-174066,University of Minnesota-Twin Cities,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,51,Health Professions and Related Programs,698
-174066,University of Minnesota-Twin Cities,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,52,"Business, Management, Marketing, and Related Support Services",23
 174066,University of Minnesota-Twin Cities,2024,Second major,Bachelors,Bachelor's degree,01,Agricultural/Animal/Plant/Veterinary Science and Related Fields,7
 174066,University of Minnesota-Twin Cities,2024,Second major,Bachelors,Bachelor's degree,05,"Area, Ethnic, Cultural, Gender, and Group Studies",5
 174066,University of Minnesota-Twin Cities,2024,Second major,Bachelors,Bachelor's degree,09,"Communication, Journalism, and Related Programs",16
@@ -1272,8 +1225,6 @@ Unit ID,Institution,Year,Major Number,Degree Group,Award Level,CIP Code,CIP Titl
 181464,University of Nebraska-Lincoln,2024,First major,Graduate,Master's degree,51,Health Professions and Related Programs,38
 181464,University of Nebraska-Lincoln,2024,First major,Graduate,Master's degree,52,"Business, Management, Marketing, and Related Support Services",203
 181464,University of Nebraska-Lincoln,2024,First major,Graduate,Master's degree,54,History,3
-181464,University of Nebraska-Lincoln,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,22,Legal Professions and Studies,155
-181464,University of Nebraska-Lincoln,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,51,Health Professions and Related Programs,8
 181464,University of Nebraska-Lincoln,2024,Second major,Bachelors,Bachelor's degree,01,Agricultural/Animal/Plant/Veterinary Science and Related Fields,2
 181464,University of Nebraska-Lincoln,2024,Second major,Bachelors,Bachelor's degree,03,Natural Resources and Conservation,2
 181464,University of Nebraska-Lincoln,2024,Second major,Bachelors,Bachelor's degree,05,"Area, Ethnic, Cultural, Gender, and Group Studies",4
@@ -1359,7 +1310,6 @@ Unit ID,Institution,Year,Major Number,Degree Group,Award Level,CIP Code,CIP Titl
 209551,University of Oregon,2024,First major,Graduate,Master's degree,51,Health Professions and Related Programs,40
 209551,University of Oregon,2024,First major,Graduate,Master's degree,52,"Business, Management, Marketing, and Related Support Services",195
 209551,University of Oregon,2024,First major,Graduate,Master's degree,54,History,5
-209551,University of Oregon,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,22,Legal Professions and Studies,165
 209551,University of Oregon,2024,Second major,Bachelors,Bachelor's degree,03,Natural Resources and Conservation,7
 209551,University of Oregon,2024,Second major,Bachelors,Bachelor's degree,05,"Area, Ethnic, Cultural, Gender, and Group Studies",11
 209551,University of Oregon,2024,Second major,Bachelors,Bachelor's degree,09,"Communication, Journalism, and Related Programs",15
@@ -1452,12 +1402,6 @@ Unit ID,Institution,Year,Major Number,Degree Group,Award Level,CIP Code,CIP Titl
 123961,University of Southern California,2024,First major,Graduate,Master's degree,51,Health Professions and Related Programs,955
 123961,University of Southern California,2024,First major,Graduate,Master's degree,52,"Business, Management, Marketing, and Related Support Services",1699
 123961,University of Southern California,2024,First major,Graduate,Master's degree,54,History,8
-123961,University of Southern California,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - other,04,Architecture and Related Services,3
-123961,University of Southern California,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - other,14,Engineering,2
-123961,University of Southern California,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - other,44,Public Administration and Social Service Professions,87
-123961,University of Southern California,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - other,51,Health Professions and Related Programs,4
-123961,University of Southern California,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,22,Legal Professions and Studies,220
-123961,University of Southern California,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,51,Health Professions and Related Programs,746
 123961,University of Southern California,2024,Second major,Bachelors,Bachelor's degree,03,Natural Resources and Conservation,7
 123961,University of Southern California,2024,Second major,Bachelors,Bachelor's degree,05,"Area, Ethnic, Cultural, Gender, and Group Studies",5
 123961,University of Southern California,2024,Second major,Bachelors,Bachelor's degree,09,"Communication, Journalism, and Related Programs",22
@@ -1554,10 +1498,6 @@ Unit ID,Institution,Year,Major Number,Degree Group,Award Level,CIP Code,CIP Titl
 236948,University of Washington-Seattle Campus,2024,First major,Graduate,Master's degree,51,Health Professions and Related Programs,800
 236948,University of Washington-Seattle Campus,2024,First major,Graduate,Master's degree,52,"Business, Management, Marketing, and Related Support Services",626
 236948,University of Washington-Seattle Campus,2024,First major,Graduate,Master's degree,54,History,7
-236948,University of Washington-Seattle Campus,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - other,13,Education,34
-236948,University of Washington-Seattle Campus,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - other,51,Health Professions and Related Programs,156
-236948,University of Washington-Seattle Campus,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,22,Legal Professions and Studies,170
-236948,University of Washington-Seattle Campus,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,51,Health Professions and Related Programs,434
 236948,University of Washington-Seattle Campus,2024,Second major,Bachelors,Bachelor's degree,03,Natural Resources and Conservation,7
 236948,University of Washington-Seattle Campus,2024,Second major,Bachelors,Bachelor's degree,05,"Area, Ethnic, Cultural, Gender, and Group Studies",26
 236948,University of Washington-Seattle Campus,2024,Second major,Bachelors,Bachelor's degree,09,"Communication, Journalism, and Related Programs",15
@@ -1656,9 +1596,6 @@ Unit ID,Institution,Year,Major Number,Degree Group,Award Level,CIP Code,CIP Titl
 240444,University of Wisconsin-Madison,2024,First major,Graduate,Master's degree,51,Health Professions and Related Programs,315
 240444,University of Wisconsin-Madison,2024,First major,Graduate,Master's degree,52,"Business, Management, Marketing, and Related Support Services",431
 240444,University of Wisconsin-Madison,2024,First major,Graduate,Master's degree,54,History,8
-240444,University of Wisconsin-Madison,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,01,Agricultural/Animal/Plant/Veterinary Science and Related Fields,88
-240444,University of Wisconsin-Madison,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,22,Legal Professions and Studies,265
-240444,University of Wisconsin-Madison,2024,First major,Graduate-Doctoral Professional/Other,Doctor's degree - professional practice,51,Health Professions and Related Programs,382
 240444,University of Wisconsin-Madison,2024,Second major,Bachelors,Bachelor's degree,01,Agricultural/Animal/Plant/Veterinary Science and Related Fields,22
 240444,University of Wisconsin-Madison,2024,Second major,Bachelors,Bachelor's degree,03,Natural Resources and Conservation,68
 240444,University of Wisconsin-Madison,2024,Second major,Bachelors,Bachelor's degree,04,Architecture and Related Services,1
