@@ -34,7 +34,17 @@
         <h1 class="title">
           What Does the Big Ten Teach? A Degree-Output Profile Comparison
         </h1>
-        <p class="subtitle">Big Ten Completions by CIP (IPEDS)</p>
+        <p class="byline">
+          By <strong>Joel Swenddal</strong> &middot;
+          University of Illinois Urbana-Champaign &middot;
+          <a href="mailto:jswen@illinois.edu">jswen@illinois.edu</a>
+          <span class="byline-date">Published: January 2026</span>
+        </p>
+
+        <p class="subtitle">
+          IPEDS completions (2023–2024) • CIP2 fields of study • Within-institution
+          profile + cross-institution share comparison
+        </p>
 
         <div class="header-actions" aria-label="Jump to section">
           <a class="button-link primary" href="#filters">Start: Filters</a>
@@ -49,14 +59,13 @@
               >How do Big Ten universities differ in what fields they graduate
               students from?</strong
             >
-            This visualization uses IPEDS degree completions (Academic Year
-            2023–2024), grouped into CIP2 fields of study, to profile each
-            institution and compare institutions on a selected field.
+            Use this tool to explore each institution’s degree-output profile across
+            broad fields of study (CIP2), then compare institutions on any single field.
           </p>
 
           <div class="quickstart" aria-label="Quick start">
             <h2>Quick start</h2>
-            <ul>
+            <ol>
               <li>
                 <strong>Select an institution</strong> to populate Figure 1
                 (treemap).
@@ -73,7 +82,7 @@
                 <strong>Hover</strong> for counts and percentages; click a tile
                 again to deselect.
               </li>
-            </ul>
+            </ol>
           </div>
 
           <details class="details">
@@ -117,7 +126,9 @@
     <main class="container">
       <!-- Controls -->
       <section id="filters" class="controls card" aria-label="Filters">
-        <h2 class="card-title">Filters</h2>
+        <div class="section-header">
+          <h2>Filters</h2>
+        </div>
 
         <div class="controls-grid">
           <div class="control">
@@ -167,10 +178,11 @@
               </option>
             </select>
             <p class="help">
-              Tip: You can also click a treemap tile to select/deselect a CIP2
+              Tip: You can also click a treemap tile to select a CIP2
               area.
             </p>
           </div>
+
           <div class="control control-wide">
             <p id="filterStatus" class="help" aria-live="polite">
               STATUS LINE TEST
@@ -189,11 +201,11 @@
 
       <!-- Treemap -->
       <section id="figure1" class="viz card" aria-label="Treemap">
+        <div class="section-header">
+          <h2>Figure 1. Degree-output profile within the selected institution (by CIP2 field)</h2>
+        </div>
+
         <div class="viz-header">
-          <h2 class="card-title">
-            Figure 1. Completion percentages by CIP Field of Study within an
-            institution
-          </h2>
           <p class="card-subtitle">
             Tile size represents completions. Hover for full CIP title and
             counts.
@@ -208,15 +220,12 @@
       </section>
 
       <!-- Comparison bar chart -->
-      <section
-        id="figure2"
-        class="viz card"
-        aria-label="Institution comparison"
-      >
+      <section id="figure2" class="viz card" aria-label="Institution comparison">
+        <div class="section-header">
+          <h2>Figure 2. Share of completions in the selected CIP2 field, by institution</h2>
+        </div>
+
         <div class="viz-header">
-          <h2 class="card-title">
-            Figure 2. Institution comparison for selected CIP Field of Study
-          </h2>
           <p class="card-subtitle">
             Shows the percent of completions in the selected CIP2 area for each
             institution, using the same Major / Degree group / Award level
@@ -224,11 +233,7 @@
           </p>
         </div>
 
-        <div
-          id="comparisonChart"
-          class="plot"
-          aria-label="Comparison bar chart"
-        >
+        <div id="comparisonChart" class="plot" aria-label="Comparison bar chart">
           <div id="comparisonEmptyState" class="empty-state">
             Select a CIP2 field above (or click a treemap tile) to compare
             institutions.
@@ -237,12 +242,10 @@
       </section>
 
       <!-- Data & Methods -->
-      <section
-        id="methods"
-        class="card prose"
-        aria-label="Data and methodology"
-      >
-        <h2 class="card-title">Data & methodology</h2>
+      <section id="methods" class="card prose" aria-label="Data and methodology">
+        <div class="section-header">
+          <h2>Data & methodology</h2>
+        </div>
 
         <h3>Data source</h3>
         <p>
@@ -252,6 +255,7 @@
           slightly from institution-published figures due to reporting windows
           and classification standards.
         </p>
+
         <h3>How to read the visuals</h3>
         <ul>
           <li>
@@ -272,7 +276,7 @@
           <li>
             <strong>Degree group:</strong> Category grouping for award types.
           </li>
-          <li><strong>Award level:</strong> Award-level detail (or All).</li>
+          <li><strong>Award level:</strong> Award-level detail (or 'All'). 'All' is relative to the Degree group already selected. </li>
         </ul>
 
         <h3>Notes & limitations</h3>
@@ -295,7 +299,7 @@
       <!-- Footer -->
       <footer class="footer">
         <p>
-          Built with Plotly.js. Dataset processing and visualization code
+          Built with JavaScript and Plotly.js. Dataset processing and visualization code
           maintained in the project repository.
         </p>
       </footer>

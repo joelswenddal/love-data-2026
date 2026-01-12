@@ -763,6 +763,125 @@ function renderTreemap(aggRows, sel) {
  * - Bars colored to match selected CIP2 color
  * - Hover includes numerator/denom/share + filter context
  */
+
+function renderInstitutionComparisonChart(
+  compRows,
+  selectedCip2Code,
+  selectedCip2Label,
+  sel
+) {
+  const elId = "comparisonChart";
+
+  if (!ensureElementExists(elId, "Institution comparison chart container")) {
+    return;
+  }
+
+  if (!compRows || compRows.length === 0) {
+    Plotly.purge(elId);
+    return;
+  }
+
+  const barColor = cipColorMap.get(String(selectedCip2Code)) || "#1f77b4";
+
+  // --- Responsive tweaks (isolated to Figure 2 only) ---
+  const w = window.innerWidth || 1024;
+  const isMobile = w <= 640;
+
+  // Reduce left margin on phones so bars have room
+  const leftMargin = isMobile ? 140 : 300;
+
+  // Slightly smaller tick fonts on phones
+  const yTickFontSize = isMobile ? 10 : 12;
+  const xTickFontSize = isMobile ? 10 : 12;
+
+  const y = compRows.map((d) => d.institution);
+  const x = compRows.map((d) => safeNumber(d.share) * 100);
+
+  const customdata = compRows.map((d) => ({
+    unitId: d.unitId,
+    numerator: safeNumber(d.numerator),
+    denom: safeNumber(d.denom),
+  }));
+
+  function formatFilterLabel(label, value) {
+    return value && value !== "All" ? `${label}: ${value}` : null;
+  }
+
+  const filterLines = [
+    formatFilterLabel("Institution", sel.institution),
+    formatFilterLabel("Major", sel?.major),
+    formatFilterLabel("Degree group", sel?.degreeGroup),
+    formatFilterLabel("Award level", sel?.awardLevel),
+  ].filter(Boolean);
+
+  const filterContextHtml =
+    filterLines.length > 0
+      ? "<br><br><span style='font-size:11px'>" +
+        "<i>Filters:</i><br>" +
+        filterLines.join("<br>") +
+        "</span>"
+      : "";
+
+  const trace = {
+    type: "bar",
+    orientation: "h",
+    y,
+    x,
+    customdata,
+    marker: { color: barColor },
+
+    hovertemplate:
+      "<b>%{y}</b><br>" +
+      `CIP2: ${selectedCip2Label}<br>` +
+      "CIP2 completions: %{customdata.numerator:,.0f}<br>" +
+      "Total completions: %{customdata.denom:,.0f}<br>" +
+      "Share: %{x:.2f}%" +
+      filterContextHtml +
+      "<extra></extra>",
+  };
+
+  const layout = {
+    ...PLOT_THEME,
+    title: isMobile
+      ? { text: `CIP2 share — ${selectedCip2Label}` }
+      : { text: `CIP2 share by institution — ${selectedCip2Label}` },
+
+    // Critical fix for mobile
+    margin: { t: 50, l: leftMargin, r: 20, b: 60 },
+
+    xaxis: {
+      title: "Percent of completions",
+      ticksuffix: "%",
+      rangemode: "tozero",
+      tickfont: { size: xTickFontSize },
+    },
+
+    yaxis: {
+      // Keep your original behavior (reversed = highest on top)
+      autorange: "reversed",
+      // On mobile we avoid auto-expanding margins because it can re-steal plot area
+      automargin: !isMobile,
+      tickfont: { size: yTickFontSize },
+    },
+
+    // Slightly tighter height scaling on phones
+    height: isMobile
+      ? Math.max(420, 18 * compRows.length + 140)
+      : Math.max(450, 22 * compRows.length + 140),
+
+    // Helps touch selection feel more predictable
+    hovermode: "closest",
+  };
+
+  Plotly.react(elId, [trace], layout, PLOT_CONFIG);
+
+  // Helps iOS/Safari after orientation changes or initial load sizing quirks
+  const node = document.getElementById(elId);
+  if (node) Plotly.Plots.resize(node);
+}
+
+
+/**
 function renderInstitutionComparisonChart(
   compRows,
   selectedCip2Code,
@@ -846,7 +965,7 @@ function renderInstitutionComparisonChart(
 
   Plotly.react(elId, [trace], layout, PLOT_CONFIG);
 }
-
+*/
 // ------------------------------------------------------------
 // 10) Comparison-only controller
 // ------------------------------------------------------------
