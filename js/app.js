@@ -70,7 +70,7 @@ const PLOT_THEME = {
 const PLOT_CONFIG = {
   responsive: true,
   displaylogo: false,
-  displayModeBar: false,
+  displayModeBar: "hover",
 };
 
 // ------------------------------------------------------------
@@ -1170,6 +1170,48 @@ function attachTreemapInteractionHandlers() {
     // Ignore clicks that aren't CIP2 tiles (root has customdata = null)
     if (!cip2) return;
 
+    setSelectedCip2(String(cip2));
+
+    // Mobile: delay comparison update so the tap tooltip doesn't instantly vanish
+    const isMobile = (window.innerWidth || 1024) <= 640;
+    if (isMobile) {
+      window.setTimeout(() => updateComparisonOnly(), 250);
+    } else {
+      updateComparisonOnly();
+    }
+  });
+
+  chartEl.on("plotly_treemaproot", () => {
+    clearSelectedCip2();
+    updateComparisonOnly();
+  });
+
+  chartEl.on("plotly_doubleclick", () => {
+    clearSelectedCip2();
+    updateComparisonOnly();
+  });
+}
+
+
+/**
+function attachTreemapInteractionHandlers() {
+  const chartEl = document.getElementById("chart");
+  if (!chartEl) return;
+
+  // Remove existing listeners to prevent duplicate firing
+  if (typeof chartEl.removeAllListeners === "function") {
+    chartEl.removeAllListeners("plotly_click");
+    chartEl.removeAllListeners("plotly_treemaproot");
+    chartEl.removeAllListeners("plotly_doubleclick");
+  }
+
+  chartEl.on("plotly_click", (ev) => {
+    const pt = ev?.points?.[0];
+    const cip2 = pt?.customdata?.cipCode;
+
+    // Ignore clicks that aren't CIP2 tiles (root has customdata = null)
+    if (!cip2) return;
+
     // Always select (do NOT toggle off on same click)
     setSelectedCip2(String(cip2));
 
@@ -1187,6 +1229,7 @@ function attachTreemapInteractionHandlers() {
     updateComparisonOnly();
   });
 }
+  */
 
 // ------------------------------------------------------------
 // 14) App entrypoint
