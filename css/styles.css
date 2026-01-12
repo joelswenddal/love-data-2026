@@ -23,9 +23,14 @@ html, body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-  line-height: 1.45;
+  font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
 }
+
+p { margin: 10px 0; }
+
+a { color: inherit; }
+a:hover { text-decoration: underline; }
 
 .container {
   width: min(var(--maxw), calc(100% - 40px));
@@ -33,39 +38,210 @@ html, body {
 }
 
 /* =========================================
-   Header
+   Header (tight hero)
    ========================================= */
 
 .site-header {
   border-bottom: 1px solid var(--border);
-  padding: 28px 0 18px;
+  padding: 18px 0 12px;
   background: linear-gradient(180deg, #fafafa 0%, #ffffff 85%);
 }
 
 .kicker {
   margin: 0 0 6px;
   color: var(--muted);
-  font-size: 13px;
-  letter-spacing: 0.02em;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .title {
   margin: 0;
-  font-size: 34px;
-  line-height: 1.15;
+  font-size: 30px;
+  line-height: 1.12;
   letter-spacing: -0.02em;
+  max-width: 40ch;
 }
+
+.byline {
+  margin: 8px 0 6px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.byline a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.byline a:hover {
+  text-decoration: underline;
+}
+
+.byline-date {
+  margin-left: 8px;
+  white-space: nowrap;
+}
+
 
 .subtitle {
   margin: 6px 0 0;
   color: var(--muted);
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .lede {
-  margin-top: 14px;
+  margin-top: 10px;
   color: var(--muted);
   max-width: 90ch;
+}
+
+.lede p {
+  margin: 8px 0;
+}
+
+.lede .summary {
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* Header actions (jump links) */
+.header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+a.button-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+a.button-link:hover {
+  background: #f7f7f7;
+  text-decoration: none;
+}
+
+a.button-link.primary {
+  border-color: #d1d5db;
+  background: #111827;
+  color: #fff;
+}
+
+a.button-link.primary:hover {
+  background: #0b1220;
+}
+
+/* =========================================
+   Quick start (refined for numbered steps)
+   ========================================= */
+
+.quickstart {
+  margin-top: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+  max-width: 90ch;
+}
+
+.quickstart h2 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Default: single-column, clean numbering */
+.quickstart ol {
+  margin: 0;
+  padding-left: 20px;   /* controls number gutter */
+  color: var(--muted);
+}
+
+.quickstart ol {
+  list-style-position: outside;
+}
+
+.quickstart ol li::marker {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.quickstart li {
+  margin: 6px 0;
+  line-height: 1.45;
+}
+
+.quickstart li strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* Wide screens: two-column layout WITHOUT breaking the step order */
+@media (min-width: 860px) {
+  .quickstart ol {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 28px;
+    row-gap: 6px;
+  }
+
+  .quickstart li {
+    margin: 0;
+  }
+}
+
+.details {
+  margin-top: 10px;
+  max-width: 90ch;
+}
+
+details.details {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+  padding: 10px 12px;
+}
+
+details.details > summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text);
+  list-style: none;
+}
+
+details.details > summary::-webkit-details-marker {
+  display: none;
+}
+
+details.details > summary::after {
+  content: "▾";
+  float: right;
+  color: var(--muted-2);
+}
+
+details.details[open] > summary::after {
+  content: "▴";
+}
+
+details.details .details-body {
+  margin-top: 10px;
+  color: var(--muted);
+}
+
+details.details .details-body p {
+  margin: 8px 0;
 }
 
 .interact {
@@ -78,7 +254,29 @@ html, body {
 }
 
 /* =========================================
-   Cards / Sections
+   Section headers (Option A: header strip inside cards)
+   ========================================= */
+
+.section-header {
+  background: #f3f6fa;              /* very light blue-gray */
+  border-left: 4px solid #5c7f8a;   /* muted accent */
+  padding: 10px 14px;
+
+  /* Key changes: integrate with card + reduce vertical whitespace */
+  margin: -16px -18px 12px;         /* pull to card edges; bottom gap only */
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #1f2937;
+}
+
+
+/* =========================================
+   Cards / Sections (refined)
    ========================================= */
 
 .card {
@@ -86,13 +284,14 @@ html, body {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 16px 16px;
-  margin: 18px 0;
+  padding: 16px 18px;
+  margin: 12px 0;
 }
 
 .card-title {
   margin: 0 0 6px;
-  font-size: 18px;
+  font-size: 17px;
+  line-height: 1.25;
 }
 
 .card-subtitle {
@@ -105,15 +304,17 @@ html, body {
   margin: 14px 0 6px;
   font-size: 15px;
 }
+
 .prose p, .prose li {
   color: var(--muted);
 }
+
 .prose ul {
   margin: 8px 0 0 18px;
 }
 
 /* =========================================
-   Controls
+   Controls (refined)
    ========================================= */
 
 .controls-grid {
@@ -123,6 +324,8 @@ html, body {
   align-items: end;
 }
 
+.control { min-width: 0; }
+
 .control label {
   display: block;
   font-size: 12px;
@@ -130,9 +333,10 @@ html, body {
   margin-bottom: 6px;
 }
 
-select {
+select,
+button {
   width: 100%;
-  padding: 8px 10px;
+  padding: 9px 10px;
   border: 1px solid var(--border);
   border-radius: 10px;
   background: #fff;
@@ -150,12 +354,24 @@ select {
   grid-column: 1 / -1;
 }
 
+/* Reset button */
+#resetFiltersBtn {
+  background: #f7f7f7;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+#resetFiltersBtn:hover {
+  background: #efefef;
+}
+
 /* Responsive controls */
 @media (max-width: 920px) {
   .controls-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
 @media (max-width: 520px) {
   .controls-grid {
     grid-template-columns: 1fr;
@@ -163,20 +379,25 @@ select {
 }
 
 /* =========================================
-   Plots
+   Plots (balanced)
    ========================================= */
 
 .plot {
   width: 100%;
-  min-height: 520px; /* ensures Plotly has space even before rendering */
+  min-height: 440px;
 }
 
 #chart {
-  min-height: 640px;
+  min-height: 560px;
 }
 
 #comparisonChart {
-  min-height: 520px;
+  min-height: 440px;
+}
+
+@media (max-width: 520px) {
+  .plot { min-height: 380px; }
+  #chart { min-height: 460px; }
 }
 
 .viz-header {
@@ -188,6 +409,16 @@ select {
   color: var(--muted-2);
   font-size: 12px;
 }
+
+.empty-state {
+  color: var(--muted);
+  font-size: 14px;
+  padding: 14px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  background: #fff;
+}
+
 
 /* =========================================
    Errors + Notes
@@ -213,4 +444,13 @@ select {
   margin: 18px 0 34px;
   color: var(--muted-2);
   font-size: 12px;
+}
+
+/* Focus states */
+select:focus,
+button:focus,
+a.button-link:focus,
+details.details > summary:focus {
+  outline: 3px solid rgba(17, 24, 39, 0.25);
+  outline-offset: 2px;
 }

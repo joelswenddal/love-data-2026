@@ -41,6 +41,39 @@ let rawPayload = null; // parsed JSON response; { meta: {...}, data: [...] } OR 
 let rawRows = []; // array of row objects
 
 // ------------------------------------------------------------
+// 0a) Shared Plotly theme + config
+// ------------------------------------------------------------
+
+const BASE_FONT = {
+  family:
+    "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+  size: 12,
+  color: "#1f2937",
+};
+
+const PLOT_THEME = {
+  font: BASE_FONT,
+  paper_bgcolor: "transparent",
+  plot_bgcolor: "transparent",
+  hoverlabel: {
+    bgcolor: "white",
+    bordercolor: "#d1d5db",
+    font: {
+      ...BASE_FONT,
+      size: 12,
+      color: "#111827",
+    },
+    align: "left",
+  },
+};
+
+const PLOT_CONFIG = {
+  responsive: true,
+  displaylogo: false,
+  displayModeBar: false,
+};
+
+// ------------------------------------------------------------
 // Shared state: selected CIP2 for institution comparison
 // ------------------------------------------------------------
 let selectedCip2 = ""; // "" means no selection
@@ -51,10 +84,60 @@ function setSelectedCip2(code) {
   // Keep the dropdown in sync (if present)
   const dd = document.getElementById("cip2CompareSelect");
   if (dd) dd.value = selectedCip2;
+
+  // Keep filter status line in sync
+  updateFilterStatus();
 }
 
 function clearSelectedCip2() {
   setSelectedCip2("");
+}
+
+// ------------------------------------------------------------
+// Reset filters to defaults
+// ------------------------------------------------------------
+function resetFilters() {
+  clearError();
+
+  // --- Reset main filters
+  const instEl = document.getElementById("institutionSelect");
+  const majorEl = document.getElementById("majorSelect");
+  const degreeEl = document.getElementById("degreeGroupSelect");
+  const awardEl = document.getElementById("awardLevelSelect");
+  const cip2El = document.getElementById("cip2CompareSelect");
+
+  // Institution default: UIUC if present; else first option
+  if (instEl) {
+    const uiuc = "University of Illinois Urbana-Champaign";
+    const hasUiuc = [...instEl.options].some((o) => o.value === uiuc);
+    instEl.value = hasUiuc ? uiuc : instEl.options[0]?.value || "";
+  }
+
+  // Major default: first option in the HTML (Major 1)
+  if (majorEl) majorEl.value = majorEl.options[0]?.value || "First major";
+
+  // Degree group default: "All" if present, else first option
+  if (degreeEl) {
+    const hasAll = [...degreeEl.options].some((o) => o.value === "All");
+    degreeEl.value = hasAll ? "All" : degreeEl.options[0]?.value || "";
+  }
+
+  // Award level default: "All" if present, else first option
+  if (awardEl) {
+    const hasAll = [...awardEl.options].some((o) => o.value === "All");
+    awardEl.value = hasAll ? "All" : awardEl.options[0]?.value || "";
+  }
+
+  // --- Reset CIP2 comparison selection (shared state + dropdown)
+  clearSelectedCip2();
+  if (cip2El) cip2El.value = "";
+
+  // Status + empty-state baseline (safe no-ops if elements missing)
+  updateFilterStatus();
+  updateComparisonEmptyState();
+
+  // --- Re-render everything (treemap + comparison message/chart)
+  updateViz();
 }
 
 // ------------------------------------------------------------
@@ -89,7 +172,6 @@ const CIP_PALETTE = [
   "#A68C8A", // muted warm taupe
   "#5F5F5F", // dark neutral grey
 ];
-
 
 let cipColorMap = new Map();
 
@@ -327,7 +409,10 @@ function populateCip2CompareControl(rows) {
   }
 
   const options = [...byCode.entries()]
-    .map(([code, title]) => ({ code: String(code), title: String(title ?? "") }))
+    .map(([code, title]) => ({
+      code: String(code),
+      title: String(title ?? ""),
+    }))
     .sort((a, b) => a.code.localeCompare(b.code, undefined, { numeric: true }));
 
   const sel = document.getElementById("cip2CompareSelect");
@@ -368,6 +453,66 @@ function getSelections() {
     degreeGroup: document.getElementById("degreeGroupSelect").value, // "All" or specific group
     awardLevel: document.getElementById("awardLevelSelect").value, // "All" or specific award level
   };
+}
+
+// ------------------------------------------------------------
+// UI helpers: filter status line + Figure 2 empty state
+// ------------------------------------------------------------
+
+function getSelectedText(selectEl) {
+  if (!selectEl || selectEl.selectedIndex < 0) return "";
+  const opt = selectEl.options[selectEl.selectedIndex];
+  return opt && opt.text ? opt.text.trim() : "";
+}
+
+function updateFilterStatus(sel) {
+  const el = document.getElementById("filterStatus");
+  if (!el) return;
+
+  // Prefer passed selections; fall back to reading the DOM
+  const s = sel || getSelections() || {};
+
+  const instEl = document.getElementById("institutionSelect");
+  const majorEl = document.getElementById("majorSelect");
+  const degreeEl = document.getElementById("degreeGroupSelect");
+  const awardEl = document.getElementById("awardLevelSelect");
+  const cip2El = document.getElementById("cip2CompareSelect");
+
+  const institution = s.institution || getSelectedText(instEl) || "—";
+  const major = s.major || getSelectedText(majorEl) || "—";
+  const degreeGroup = s.degreeGroup || getSelectedText(degreeEl) || "—";
+  const awardLevel = s.awardLevel || getSelectedText(awardEl) || "—";
+
+  // Use shared state first, then dropdown
+  const cip2Value = selectedCip2 || (cip2El ? cip2El.value : "");
+  const cip2Text = cip2Value
+    ? cip2El
+      ? getSelectedText(cip2El)
+      : String(cip2Value)
+    : "None selected";
+
+  el.textContent = `Showing: ${institution} • ${major} • ${degreeGroup} • ${awardLevel} • Comparison: ${cip2Text}`;
+}
+
+function updateComparisonEmptyState() {
+  const emptyEl = document.getElementById("comparisonEmptyState");
+  if (!emptyEl) return;
+
+  const cip2El = document.getElementById("cip2CompareSelect");
+  const hasSelection = !!(selectedCip2 || (cip2El && cip2El.value));
+
+  // IMPORTANT:
+  // - If there IS a selection, do NOT force-hide the empty-state.
+  //   updateComparisonOnly() is responsible for deciding whether to show a message or a chart.
+  // - If there is NO selection, ensure the empty-state is visible with a default prompt.
+  if (!hasSelection) {
+    if (!emptyEl.textContent || !emptyEl.textContent.trim()) {
+      emptyEl.textContent =
+        "Select a CIP2 field above (or click a treemap tile) to compare institutions.";
+    }
+    emptyEl.style.display = "block";
+  }
+  // else: leave current display state unchanged
 }
 
 // ------------------------------------------------------------
@@ -480,7 +625,7 @@ function buildInstitutionComparison(rowsAllInst, selectedCip2Code) {
   }));
 
   out.sort(
-    (a, b) => (b.share - a.share) || a.institution.localeCompare(b.institution)
+    (a, b) => b.share - a.share || a.institution.localeCompare(b.institution)
   );
 
   return out;
@@ -492,64 +637,80 @@ function buildInstitutionComparison(rowsAllInst, selectedCip2Code) {
 
 /**
  * Render the treemap in div#chart.
- * Input: aggregated rows [{ cipCode, cipTitle, total }], selections
- * Uses cipColorMap for stable colors.
- * Includes filter context in hover tooltip.
- * Uses customdata to store full cipTitle for tooltips and click handling.
- * Renders via Plotly.react for efficient updates.
- * Clears previous error messages on success.
-  */
-
+ * - Root is institution (shows totals on hover; no CIP2 fields)
+ * - Children are CIP2 categories sized by completions
+ * - Uses customdata objects so treemap click handlers can read cipCode reliably
+ * - Includes filter context in child hover tooltip
+ */
 function renderTreemap(aggRows, sel) {
   if (!ensureElementExists("chart", "Treemap container")) return;
 
   const root = sel.institution;
 
-  const childLabels = aggRows.map((r) => {
-    const shortTitle = makeShortTitle(r.cipTitle, 30);
-    return shortTitle;
-  });
+  const childLabels = aggRows.map((r) => makeShortTitle(r.cipTitle, 30));
 
   const labels = [root, ...childLabels];
   const parents = ["", ...aggRows.map(() => root)];
-  const values = [0, ...aggRows.map((r) => r.total)];
+
+  // Root should equal sum(children) when branchvalues="total"
+  const total = aggRows.reduce((sum, r) => sum + safeNumber(r.total), 0);
+  const values = [total, ...aggRows.map((r) => safeNumber(r.total))];
 
   const childColors = aggRows.map(
     (r) => cipColorMap.get(String(r.cipCode)) || "#888888"
   );
   const colors = ["#FFFFFF", ...childColors];
 
-  // Store full title in customdata for tooltips and click handling
+  // IMPORTANT: customdata objects (not arrays) so click handler can read pt.customdata.cipCode
   const customdata = [
-    null,
+    null, // root node has no customdata
     ...aggRows.map((r) => ({
-      cipCode: r.cipCode,
-      cipTitle: r.cipTitle,
+      cipCode: String(r.cipCode ?? ""),
+      cipTitle: String(r.cipTitle ?? ""),
     })),
   ];
 
   // ------------------------------------------------------------
-  // NEW: build filter context for hover tooltip
+  // Filter context (for tooltip)
   // ------------------------------------------------------------
-
   function formatFilterLabel(label, value) {
     return value && value !== "All" ? `${label}: ${value}` : null;
   }
 
   const filterLines = [
+    formatFilterLabel("Institution", sel.institution),
     formatFilterLabel("Major", sel.major),
     formatFilterLabel("Degree group", sel.degreeGroup),
     formatFilterLabel("Award level", sel.awardLevel),
   ].filter(Boolean);
 
   const filterContextHtml =
-  filterLines.length > 0
-    ? "<br><br><span style='font-size:11px'>" +
+    filterLines.length > 0
+      ? "<br><br><span style='font-size:11px'>" +
         "<i>Filters:</i><br>" +
         filterLines.join("<br>") +
-      "</span>"
-    : "";
+        "</span>"
+      : "";
 
+  // ------------------------------------------------------------
+  // Hover templates: root vs children
+  // ------------------------------------------------------------
+  const rootHover =
+    "<b>%{label}</b><br>" +
+    "Total completions: %{value:,}" +
+    filterContextHtml + // optional; remove if you truly want no filters on root hover
+    "<extra></extra>";
+
+  const childHover =
+    "<b>%{customdata.cipTitle}</b><br>" +
+    "CIP2 Code: %{customdata.cipCode}<br>" +
+    "Completions: %{value:,}<br>" +
+    "Share of institution: %{percentParent:.1%}" +
+    filterContextHtml +
+    "<extra></extra>";
+
+  // One hovertemplate per node (root + children)
+  const hovertemplate = [rootHover, ...aggRows.map(() => childHover)];
 
   // ------------------------------------------------------------
   // Treemap trace
@@ -559,31 +720,38 @@ function renderTreemap(aggRows, sel) {
     labels,
     parents,
     values,
+    branchvalues: "total",
+
+    pathbar: {
+      visible: true,
+      side: "top",
+      textfont: { family: BASE_FONT.family, size: 12 },
+    },
+
     textinfo: "label+percent parent",
-    textfont: { size: 12 },
+    textfont: {
+      family: BASE_FONT.family,
+      size: 11,
+      color: "rgba(255,255,255,0.95)",
+    },
 
     marker: { colors, line: { width: 2, color: "#FFFFFF" } },
+
     customdata,
-    hovertemplate:
-      "<b>%{customdata.cipTitle}</b><br>" +
-      "CIP2 Code: %{customdata.cipCode}<br>" +
-      "Completions: %{value:,}<br>" +
-      "Share of institution: %{percentParent:.1%}" +
-      filterContextHtml +
-      "<extra></extra>",
+    hovertemplate,
   };
 
   const layout = {
-    font: { size: 12 },
+    ...PLOT_THEME,
+    font: { ...(PLOT_THEME.font || {}), size: 12 },
     uniformtext: { minsize: 12, mode: "hide" },
     margin: { t: 20, l: 10, r: 10, b: 10 },
   };
 
-  Plotly.react("chart", [trace], layout, { responsive: true });
+  Plotly.react("chart", [trace], layout, PLOT_CONFIG);
 
-  // IMPORTANT: Plotly.react can drop listeners in some updates, so rebind after render.
+  // Plotly.react can drop listeners in some updates, so rebind after render.
   attachTreemapInteractionHandlers();
-
 }
 
 // ------------------------------------------------------------
@@ -592,38 +760,42 @@ function renderTreemap(aggRows, sel) {
 
 /**
  * Render the institution comparison chart in div#comparisonChart.
- *
- * Inputs:
- *  - compRows: array of { institution, unitId, denom, numerator, share }
- *      share is 0–1; we display it as percent.
- *  - selectedCip2Label: user-facing label for the chosen CIP2 (e.g., "42 — PSYCHOLOGY")
- *
- * Behavior:
- *  - If compRows is empty, the chart is purged (cleared).
- *  - Chart is a horizontal bar chart, sorted by share descending (your build function already sorts).
- *  - Hover shows numerator, denominator, and percent share.
- *
- * Requirements:
- *  - index.html must contain <div id="comparisonChart"></div>
- *  - That div must have a non-zero height (CSS), otherwise it will appear “missing.”
+ * - Bars colored to match selected CIP2 color
+ * - Hover includes numerator/denom/share + filter context
  */
-function renderInstitutionComparisonChart(compRows, selectedCip2Code, selectedCip2Label, sel) {
+
+function renderInstitutionComparisonChart(
+  compRows,
+  selectedCip2Code,
+  selectedCip2Label,
+  sel
+) {
   const elId = "comparisonChart";
 
   if (!ensureElementExists(elId, "Institution comparison chart container")) {
     return;
   }
 
-  // If no rows, clear the chart and exit
   if (!compRows || compRows.length === 0) {
     Plotly.purge(elId);
     return;
   }
 
-  const barColor = cipColorMap.get(String(selectedCip2Code)) || "#1f77b4"; // Plotly default fallback
+  const barColor = cipColorMap.get(String(selectedCip2Code)) || "#1f77b4";
+
+  // --- Responsive tweaks (isolated to Figure 2 only) ---
+  const w = window.innerWidth || 1024;
+  const isMobile = w <= 640;
+
+  // Reduce left margin on phones so bars have room
+  const leftMargin = isMobile ? 140 : 300;
+
+  // Slightly smaller tick fonts on phones
+  const yTickFontSize = isMobile ? 10 : 12;
+  const xTickFontSize = isMobile ? 10 : 12;
 
   const y = compRows.map((d) => d.institution);
-  const x = compRows.map((d) => (safeNumber(d.share) * 100)); // percent
+  const x = compRows.map((d) => safeNumber(d.share) * 100);
 
   const customdata = compRows.map((d) => ({
     unitId: d.unitId,
@@ -636,6 +808,7 @@ function renderInstitutionComparisonChart(compRows, selectedCip2Code, selectedCi
   }
 
   const filterLines = [
+    formatFilterLabel("Institution", sel.institution),
     formatFilterLabel("Major", sel?.major),
     formatFilterLabel("Degree group", sel?.degreeGroup),
     formatFilterLabel("Award level", sel?.awardLevel),
@@ -643,12 +816,11 @@ function renderInstitutionComparisonChart(compRows, selectedCip2Code, selectedCi
 
   const filterContextHtml =
     filterLines.length > 0
-      ? "<br><br><span style='font-size:11px;color:#666'>" +
-          "<i>Filters:</i><br>" +
-          filterLines.join("<br>") +
+      ? "<br><br><span style='font-size:11px'>" +
+        "<i>Filters:</i><br>" +
+        filterLines.join("<br>") +
         "</span>"
       : "";
-
 
   const trace = {
     type: "bar",
@@ -658,8 +830,6 @@ function renderInstitutionComparisonChart(compRows, selectedCip2Code, selectedCi
     customdata,
     marker: { color: barColor },
 
-    // Bar color is set to match the selected CIP2 color in the treemap.
-    
     hovertemplate:
       "<b>%{y}</b><br>" +
       `CIP2: ${selectedCip2Label}<br>` +
@@ -669,8 +839,116 @@ function renderInstitutionComparisonChart(compRows, selectedCip2Code, selectedCi
       filterContextHtml +
       "<extra></extra>",
   };
-  
+
   const layout = {
+    ...PLOT_THEME,
+    title: isMobile
+      ? { text: `CIP2 share — ${selectedCip2Label}` }
+      : { text: `CIP2 share by institution — ${selectedCip2Label}` },
+
+    // Critical fix for mobile
+    margin: { t: 50, l: leftMargin, r: 20, b: 60 },
+
+    xaxis: {
+      title: "Percent of completions",
+      ticksuffix: "%",
+      rangemode: "tozero",
+      tickfont: { size: xTickFontSize },
+    },
+
+    yaxis: {
+      // Keep your original behavior (reversed = highest on top)
+      autorange: "reversed",
+      // On mobile we avoid auto-expanding margins because it can re-steal plot area
+      automargin: !isMobile,
+      tickfont: { size: yTickFontSize },
+    },
+
+    // Slightly tighter height scaling on phones
+    height: isMobile
+      ? Math.max(420, 18 * compRows.length + 140)
+      : Math.max(450, 22 * compRows.length + 140),
+
+    // Helps touch selection feel more predictable
+    hovermode: "closest",
+  };
+
+  Plotly.react(elId, [trace], layout, PLOT_CONFIG);
+
+  // Helps iOS/Safari after orientation changes or initial load sizing quirks
+  const node = document.getElementById(elId);
+  if (node) Plotly.Plots.resize(node);
+}
+
+
+/**
+function renderInstitutionComparisonChart(
+  compRows,
+  selectedCip2Code,
+  selectedCip2Label,
+  sel
+) {
+  const elId = "comparisonChart";
+
+  if (!ensureElementExists(elId, "Institution comparison chart container")) {
+    return;
+  }
+
+  if (!compRows || compRows.length === 0) {
+    Plotly.purge(elId);
+    return;
+  }
+
+  const barColor = cipColorMap.get(String(selectedCip2Code)) || "#1f77b4";
+
+  const y = compRows.map((d) => d.institution);
+  const x = compRows.map((d) => safeNumber(d.share) * 100);
+
+  const customdata = compRows.map((d) => ({
+    unitId: d.unitId,
+    numerator: safeNumber(d.numerator),
+    denom: safeNumber(d.denom),
+  }));
+
+  function formatFilterLabel(label, value) {
+    return value && value !== "All" ? `${label}: ${value}` : null;
+  }
+
+  const filterLines = [
+    formatFilterLabel("Institution", sel.institution),
+    formatFilterLabel("Major", sel?.major),
+    formatFilterLabel("Degree group", sel?.degreeGroup),
+    formatFilterLabel("Award level", sel?.awardLevel),
+  ].filter(Boolean);
+
+  const filterContextHtml =
+    filterLines.length > 0
+      ? "<br><br><span style='font-size:11px'>" +
+        "<i>Filters:</i><br>" +
+        filterLines.join("<br>") +
+        "</span>"
+      : "";
+
+  const trace = {
+    type: "bar",
+    orientation: "h",
+    y,
+    x,
+    customdata,
+    marker: { color: barColor },
+
+    hovertemplate:
+      "<b>%{y}</b><br>" +
+      `CIP2: ${selectedCip2Label}<br>` +
+      "CIP2 completions: %{customdata.numerator:,.0f}<br>" +
+      "Total completions: %{customdata.denom:,.0f}<br>" +
+      "Share: %{x:.2f}%" +
+      filterContextHtml +
+      "<extra></extra>",
+  };
+
+  const layout = {
+    ...PLOT_THEME,
     title: { text: `CIP2 share by institution — ${selectedCip2Label}` },
     margin: { t: 50, l: 300, r: 30, b: 60 },
     xaxis: {
@@ -680,19 +958,14 @@ function renderInstitutionComparisonChart(compRows, selectedCip2Code, selectedCi
     },
     yaxis: {
       automargin: true,
-      autorange: "reversed", // highest share at top
+      autorange: "reversed",
     },
-
-    // Scale height to number of institutions (keeps labels readable)
     height: Math.max(450, 22 * compRows.length + 140),
   };
 
-  Plotly.react(elId, [trace], layout, { responsive: true });
+  Plotly.react(elId, [trace], layout, PLOT_CONFIG);
 }
-
-
-
-
+*/
 // ------------------------------------------------------------
 // 10) Comparison-only controller
 // ------------------------------------------------------------
@@ -705,36 +978,53 @@ function updateComparisonOnly() {
   const sel = getSelections();
   if (!sel) return;
 
+  // Keep filter status line in sync (safe no-op if element missing)
+  if (typeof updateFilterStatus === "function") updateFilterStatus(sel);
+
   const cip2SelectEl = document.getElementById("cip2CompareSelect");
   const comparisonEl = document.getElementById("comparisonChart");
   if (!cip2SelectEl || !comparisonEl) return;
 
-  const cip2Sel = selectedCip2 || cip2SelectEl.value || "";
+  const emptyEl = document.getElementById("comparisonEmptyState");
 
-  // Keep dropdown synced to shared state
+  // Helper: show a message in the empty-state area and clear any Plotly chart
+  function setComparisonMessage(messageText) {
+    Plotly.purge("comparisonChart");
+
+    if (emptyEl) {
+      emptyEl.textContent = messageText || "";
+      emptyEl.style.display = "block";
+    } else {
+      // Fallback if the empty-state div is missing
+      comparisonEl.textContent = messageText || "";
+    }
+  }
+
+  // 1) Sync dropdown to shared state if shared state is set
+  // (Shared state is canonical when selection comes from treemap click)
   if (selectedCip2 && cip2SelectEl.value !== String(selectedCip2)) {
     cip2SelectEl.value = String(selectedCip2);
   }
 
-  function setComparisonMessage(messageHtml) {
-    Plotly.purge("comparisonChart");
-    comparisonEl.innerHTML = messageHtml || "";
-  }
+  // 2) Effective CIP2 selection: shared state first, then dropdown
+  const cip2Sel = (selectedCip2 || cip2SelectEl.value || "").trim();
 
+  // 3) No CIP2 selected -> show instruction
   if (!cip2Sel) {
     setComparisonMessage(
-      "<p class='note'>Select a CIP2 area above to display the institution comparison chart.</p>"
+      "Select a CIP2 area above (or click a treemap tile) to display the institution comparison chart."
     );
     return;
   }
 
+  // 4) Compute comparison data across all institutions under current non-institution filters
   const rowsAllInst = filterRowsAllInstitutions(rawRows, sel);
   if (!rowsAllInst || rowsAllInst.length === 0) {
     const label =
       cip2SelectEl.selectedOptions?.[0]?.textContent?.trim() || String(cip2Sel);
 
     setComparisonMessage(
-      `<p class='note'>No rows match the current Major/Degree group/Award level filters across institutions. <b>${label}</b> is still selected; loosen filters to see comparisons.</p>`
+      `No rows match the current Major/Degree group/Award level filters across institutions. ${label} is still selected; loosen filters to see comparisons.`
     );
     return;
   }
@@ -745,7 +1035,7 @@ function updateComparisonOnly() {
       cip2SelectEl.selectedOptions?.[0]?.textContent?.trim() || String(cip2Sel);
 
     setComparisonMessage(
-      `<p class='note'>No comparison data for <b>${label}</b> under the current filters. The CIP2 selection is still active—try loosening Major/Degree group/Award level.</p>`
+      `No comparison data for ${label} under the current filters. The CIP2 selection is still active—try loosening Major/Degree group/Award level.`
     );
     return;
   }
@@ -753,14 +1043,10 @@ function updateComparisonOnly() {
   const cip2Label =
     cip2SelectEl.selectedOptions?.[0]?.textContent?.trim() || String(cip2Sel);
 
-  // If currently in message mode, purge + clear before plotting.
-  if (comparisonEl.querySelector(".note")) {
-    Plotly.purge("comparisonChart");
-    comparisonEl.innerHTML = "";
-  }
+  // 5) We have data -> hide empty-state message and render chart
+  if (emptyEl) emptyEl.style.display = "none";
 
   renderInstitutionComparisonChart(comp, cip2Sel, cip2Label, sel);
-
 }
 
 // ------------------------------------------------------------
@@ -776,6 +1062,10 @@ function updateViz() {
 
   const sel = getSelections();
   if (!sel) return;
+
+  // NEW
+  updateFilterStatus(sel);
+  updateComparisonEmptyState();
 
   // Treemap pipeline
   const filtered = filterRows(rawRows, sel);
@@ -814,12 +1104,16 @@ function updateViz() {
  * Dropdown change updates shared state for CIP2.
  */
 function attachEventHandlers() {
+  if (window.__handlersAttached) return;
+  window.__handlersAttached = true;
+
   const ids = [
     "institutionSelect",
     "majorSelect",
     "degreeGroupSelect",
     "awardLevelSelect",
   ];
+
   for (const id of ids) {
     const el = document.getElementById(id);
     if (el) el.addEventListener("change", updateViz);
@@ -829,8 +1123,13 @@ function attachEventHandlers() {
   if (cip2El) {
     cip2El.addEventListener("change", () => {
       setSelectedCip2(cip2El.value);
-      updateViz();
+      updateComparisonOnly();
     });
+  }
+
+  const resetBtn = document.getElementById("resetFiltersBtn");
+  if (resetBtn) {
+    resetBtn.addEventListener("click", resetFilters);
   }
 }
 
@@ -878,26 +1177,6 @@ function attachTreemapInteractionHandlers() {
     updateComparisonOnly();
   });
 
-/**
-  chartEl.on("plotly_click", (ev) => {
-    const pt = ev?.points?.[0];
-    const cip2 = pt?.customdata?.cipCode;
-
-    // Ignore clicks that aren't CIP2 tiles (root has customdata = null)
-    if (!cip2) return;
-
-    const clicked = String(cip2);
-    const current = String(selectedCip2 || "");
-
-    if (clicked === current) {
-      clearSelectedCip2();
-    } else {
-      setSelectedCip2(clicked);
-    }
-
-    updateComparisonOnly();
-  });
-*/
   chartEl.on("plotly_treemaproot", () => {
     clearSelectedCip2();
     updateComparisonOnly();
@@ -908,8 +1187,6 @@ function attachTreemapInteractionHandlers() {
     updateComparisonOnly();
   });
 }
-
-
 
 // ------------------------------------------------------------
 // 14) App entrypoint
