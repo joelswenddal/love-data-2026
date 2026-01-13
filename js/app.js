@@ -750,6 +750,20 @@ function renderTreemap(aggRows, sel) {
 
   Plotly.react("chart", [trace], layout, PLOT_CONFIG);
 
+  // --- Mobile interaction note (non-invasive) ---
+  const noteEl = document.getElementById("treemapNote");
+  if (noteEl) {
+    const isTouch =
+      (window.matchMedia && window.matchMedia("(pointer: coarse)").matches) ||
+      ("ontouchstart" in window) ||
+      (navigator.maxTouchPoints && navigator.maxTouchPoints > 0);
+
+    noteEl.textContent = isTouch
+      ? "On mobile devices, use the CIP2 dropdown above to populate Figure 2. Treemap tiles are optimized for viewing rather than selection."
+      : "";
+  }
+
+
   // Plotly.react can drop listeners in some updates, so rebind after render.
   attachTreemapInteractionHandlers();
 }
@@ -1152,7 +1166,6 @@ function attachEventHandlers() {
  *  - plotly_treemaproot clears selection and updates comparison only
  *  - plotly_doubleclick clears selection and updates comparison only
  */
-
 function attachTreemapInteractionHandlers() {
   const chartEl = document.getElementById("chart");
   if (!chartEl) return;
@@ -1164,58 +1177,37 @@ function attachTreemapInteractionHandlers() {
     chartEl.removeAllListeners("plotly_doubleclick");
   }
 
-  // Mobile tap behavior: first tap = tooltip only, second tap = select+update
-  let lastTapCip2 = "";
-  let lastTapAt = 0;
-
   chartEl.on("plotly_click", (ev) => {
     const pt = ev?.points?.[0];
     const cip2 = pt?.customdata?.cipCode;
+
+    // Ignore clicks that aren't CIP2 tiles (root has customdata = null)
     if (!cip2) return;
 
-    const isMobile =
-      (window.innerWidth || 1024) <= 640 ||
-      window.matchMedia?.("(pointer: coarse)").matches;
+    // Mobile/tablet: disable treemap-driven selection (use dropdown instead)
+    const isTouch =
+      (window.matchMedia && window.matchMedia("(pointer: coarse)").matches) ||
+      ("ontouchstart" in window) ||
+      (navigator.maxTouchPoints && navigator.maxTouchPoints > 0);
 
-    if (!isMobile) {
-      // Desktop: keep your current behavior
-      setSelectedCip2(String(cip2));
-      updateComparisonOnly();
-      return;
-    }
+    if (isTouch) return;
 
-    // Mobile: require a "double tap" on the same tile (within 900ms)
-    const now = Date.now();
-    const sameAsLast = String(cip2) === String(lastTapCip2);
-    const withinWindow = now - lastTapAt <= 900;
-
-    lastTapCip2 = String(cip2);
-    lastTapAt = now;
-
-    if (!(sameAsLast && withinWindow)) {
-      // First tap: allow Plotly to show tooltip; do not update Figure 2
-      return;
-    }
-
-    // Second tap: now commit selection + update Figure 2
+    // Desktop: select CIP2 and update Figure 2
     setSelectedCip2(String(cip2));
     updateComparisonOnly();
   });
 
   chartEl.on("plotly_treemaproot", () => {
-    lastTapCip2 = "";
-    lastTapAt = 0;
     clearSelectedCip2();
     updateComparisonOnly();
   });
 
   chartEl.on("plotly_doubleclick", () => {
-    lastTapCip2 = "";
-    lastTapAt = 0;
     clearSelectedCip2();
     updateComparisonOnly();
   });
 }
+
 
 
 /**
