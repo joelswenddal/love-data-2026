@@ -105,6 +105,13 @@ a:hover { text-decoration: underline; }
   font-weight: 500;
 }
 
+.subsection-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 14px 0 10px;
+}
+
+
 /* Header actions (jump links) */
 .header-actions {
   display: flex;
