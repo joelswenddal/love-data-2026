@@ -743,6 +743,7 @@ function renderTreemap(aggRows, sel) {
 
   const layout = {
     ...PLOT_THEME,
+    hovermode: "closest",
     font: { ...(PLOT_THEME.font || {}), size: 12 },
     uniformtext: { minsize: 12, mode: "hide" },
     margin: { t: 20, l: 10, r: 10, b: 10 },
@@ -895,91 +896,6 @@ function renderInstitutionComparisonChart(
 }
 
 
-/**
-function renderInstitutionComparisonChart(
-  compRows,
-  selectedCip2Code,
-  selectedCip2Label,
-  sel
-) {
-  const elId = "comparisonChart";
-
-  if (!ensureElementExists(elId, "Institution comparison chart container")) {
-    return;
-  }
-
-  if (!compRows || compRows.length === 0) {
-    Plotly.purge(elId);
-    return;
-  }
-
-  const barColor = cipColorMap.get(String(selectedCip2Code)) || "#1f77b4";
-
-  const y = compRows.map((d) => d.institution);
-  const x = compRows.map((d) => safeNumber(d.share) * 100);
-
-  const customdata = compRows.map((d) => ({
-    unitId: d.unitId,
-    numerator: safeNumber(d.numerator),
-    denom: safeNumber(d.denom),
-  }));
-
-  function formatFilterLabel(label, value) {
-    return value && value !== "All" ? `${label}: ${value}` : null;
-  }
-
-  const filterLines = [
-    formatFilterLabel("Institution", sel.institution),
-    formatFilterLabel("Major", sel?.major),
-    formatFilterLabel("Degree group", sel?.degreeGroup),
-    formatFilterLabel("Award level", sel?.awardLevel),
-  ].filter(Boolean);
-
-  const filterContextHtml =
-    filterLines.length > 0
-      ? "<br><br><span style='font-size:11px'>" +
-        "<i>Filters:</i><br>" +
-        filterLines.join("<br>") +
-        "</span>"
-      : "";
-
-  const trace = {
-    type: "bar",
-    orientation: "h",
-    y,
-    x,
-    customdata,
-    marker: { color: barColor },
-
-    hovertemplate:
-      "<b>%{y}</b><br>" +
-      `CIP2: ${selectedCip2Label}<br>` +
-      "CIP2 completions: %{customdata.numerator:,.0f}<br>" +
-      "Total completions: %{customdata.denom:,.0f}<br>" +
-      "Share: %{x:.2f}%" +
-      filterContextHtml +
-      "<extra></extra>",
-  };
-
-  const layout = {
-    ...PLOT_THEME,
-    title: { text: `CIP2 share by institution — ${selectedCip2Label}` },
-    margin: { t: 50, l: 300, r: 30, b: 60 },
-    xaxis: {
-      title: "Percent of completions",
-      ticksuffix: "%",
-      rangemode: "tozero",
-    },
-    yaxis: {
-      automargin: true,
-      autorange: "reversed",
-    },
-    height: Math.max(450, 22 * compRows.length + 140),
-  };
-
-  Plotly.react(elId, [trace], layout, PLOT_CONFIG);
-}
-*/
 // ------------------------------------------------------------
 // 10) Comparison-only controller
 // ------------------------------------------------------------
@@ -1166,6 +1082,56 @@ function attachEventHandlers() {
  *  - plotly_treemaproot clears selection and updates comparison only
  *  - plotly_doubleclick clears selection and updates comparison only
  */
+
+function attachTreemapInteractionHandlers() {
+  const chartEl = document.getElementById("chart");
+  if (!chartEl) return;
+
+  const isTouch =
+    (window.matchMedia && window.matchMedia("(pointer: coarse)").matches) ||
+    ("ontouchstart" in window) ||
+    (navigator.maxTouchPoints && navigator.maxTouchPoints > 0);
+
+  // Remove existing listeners to prevent duplicate firing
+  if (typeof chartEl.removeAllListeners === "function") {
+    chartEl.removeAllListeners("plotly_click");
+    chartEl.removeAllListeners("plotly_treemaproot");
+    chartEl.removeAllListeners("plotly_doubleclick");
+    chartEl.removeAllListeners("plotly_treemapclick"); // IMPORTANT
+  }
+
+  // --- KEY MOBILE FIX ---
+  // On touch devices, prevent Plotly’s default treemap drill-down on tap,
+  // so tap behaves like "show tooltip" instead of "zoom".
+  if (isTouch) {
+    chartEl.on("plotly_treemapclick", () => false);
+    // Do NOT attach plotly_click selection behavior on touch (you already disabled selection)
+    return;
+  }
+
+  // Desktop behavior (keep your existing selection behavior)
+  chartEl.on("plotly_click", (ev) => {
+    const pt = ev?.points?.[0];
+    const cip2 = pt?.customdata?.cipCode;
+    if (!cip2) return;
+
+    setSelectedCip2(String(cip2));
+    updateComparisonOnly();
+  });
+
+  chartEl.on("plotly_treemaproot", () => {
+    clearSelectedCip2();
+    updateComparisonOnly();
+  });
+
+  chartEl.on("plotly_doubleclick", () => {
+    clearSelectedCip2();
+    updateComparisonOnly();
+  });
+}
+
+
+/** 
 function attachTreemapInteractionHandlers() {
   const chartEl = document.getElementById("chart");
   if (!chartEl) return;
@@ -1207,7 +1173,7 @@ function attachTreemapInteractionHandlers() {
     updateComparisonOnly();
   });
 }
-
+*/
 
 
 /**
