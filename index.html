@@ -184,7 +184,7 @@
             </select>
             <p class="help">
               Tip: You can also click a treemap tile to select a CIP2
-              area.
+              area if using a desktop.
             </p>
           </div>
 
@@ -240,7 +240,7 @@
 
         <div id="comparisonChart" class="plot" aria-label="Comparison bar chart">
           <div id="comparisonEmptyState" class="empty-state">
-            Select a CIP2 field above (or click a treemap tile) to compare
+            Select a CIP2 field above (or click a treemap tile if using a desktop) to compare
             institutions.
           </div>
         </div>
@@ -255,10 +255,12 @@
         <h3>Data source</h3>
         <p>
           Data are based on completion counts reported to IPEDS for Academic
-          Year 2023-2024, aggregated to the CIP2 level. Counts are based on
+          Year 2023-2024. Counts are based on
           IPEDS completions data aggregated at the CIP2 level and may differ
-          slightly from institution-published figures due to reporting windows
-          and classification standards.
+          slightly from institution-published figures due to reporting windows, 
+          classification standards, or updates to data since reporting/retrieval.
+          Only degrees that map to CIP codes are included; any non-CIP-mapped awards
+          are not available in this dataset.
         </p>
 
         <h3>How to read the visuals</h3>
@@ -279,9 +281,12 @@
         <ul>
           <li><strong>Major:</strong> Major 1, Major 2, or All (combined).</li>
           <li>
-            <strong>Degree group:</strong> Category grouping for award types.
+            <strong>Degree group:</strong> Category grouping for award types (Bachelor's, Graduate or All).
           </li>
-          <li><strong>Award level:</strong> Award-level detail (or 'All'). 'All' is relative to the Degree group already selected. </li>
+          <li><strong>Award level:</strong> Award-level detail (or All). 'All' is relative to the Degree 
+            group already selected. Award levels included here are: Bachelor's, Masters, and 
+            Doctor's - Research/Scholarship. Other types of Doctoral degree are reported to IPEDS but are not 
+            included in this analysis.</li>
         </ul>
 
         <h3>Notes & limitations</h3>
@@ -296,6 +301,37 @@
             comparisons; it is not a count chart. Use hover tooltips for
             numerator/denominator values.
           </li>
+        </ul>
+
+        
+        <h3>Accessing the project and data</h3>
+        <ul>
+          <li>
+            Data was retrieved from the
+            <a href="https://nces.ed.gov/ipeds/use-the-data" target="_blank" rel="noopener">
+              IPEDS Data Center
+            </a>
+            using the Custom Data Files download tool to generate a CSV file for analysis.
+            The data file used for this visualization is available in the GitHub project repository
+            in Excel format.
+          </li>
+          <li>
+            The code for this visualization project is available on
+            <a href="https://github.com/joelswenddal/interactive-viz-demo" target="_blank" rel="noopener">
+              GitHub.
+            </a>
+          </li> 
+        </ul>
+
+        <h3>Authorship disclaimer</h3>
+        <ul>
+          <li>
+            This visualization was created by Joel Swenddal in a personal capacity for a staff submission to 
+            Love Data Week 2026. Although the creator is a staff member at the University of Illinois Urbana-Champaign, 
+            the content does not represent the views of the University of Illinois Urbana-Champaign or any Big 10 institution.
+            Feedback or questions can be directed to the author -- not any division or office at UIUC.
+          </li>
+          
         </ul>
 
         <p class="note" id="note"></p>
