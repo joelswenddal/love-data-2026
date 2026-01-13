@@ -1152,6 +1152,73 @@ function attachEventHandlers() {
  *  - plotly_treemaproot clears selection and updates comparison only
  *  - plotly_doubleclick clears selection and updates comparison only
  */
+
+function attachTreemapInteractionHandlers() {
+  const chartEl = document.getElementById("chart");
+  if (!chartEl) return;
+
+  // Remove existing listeners to prevent duplicate firing
+  if (typeof chartEl.removeAllListeners === "function") {
+    chartEl.removeAllListeners("plotly_click");
+    chartEl.removeAllListeners("plotly_treemaproot");
+    chartEl.removeAllListeners("plotly_doubleclick");
+  }
+
+  // Mobile tap behavior: first tap = tooltip only, second tap = select+update
+  let lastTapCip2 = "";
+  let lastTapAt = 0;
+
+  chartEl.on("plotly_click", (ev) => {
+    const pt = ev?.points?.[0];
+    const cip2 = pt?.customdata?.cipCode;
+    if (!cip2) return;
+
+    const isMobile =
+      (window.innerWidth || 1024) <= 640 ||
+      window.matchMedia?.("(pointer: coarse)").matches;
+
+    if (!isMobile) {
+      // Desktop: keep your current behavior
+      setSelectedCip2(String(cip2));
+      updateComparisonOnly();
+      return;
+    }
+
+    // Mobile: require a "double tap" on the same tile (within 900ms)
+    const now = Date.now();
+    const sameAsLast = String(cip2) === String(lastTapCip2);
+    const withinWindow = now - lastTapAt <= 900;
+
+    lastTapCip2 = String(cip2);
+    lastTapAt = now;
+
+    if (!(sameAsLast && withinWindow)) {
+      // First tap: allow Plotly to show tooltip; do not update Figure 2
+      return;
+    }
+
+    // Second tap: now commit selection + update Figure 2
+    setSelectedCip2(String(cip2));
+    updateComparisonOnly();
+  });
+
+  chartEl.on("plotly_treemaproot", () => {
+    lastTapCip2 = "";
+    lastTapAt = 0;
+    clearSelectedCip2();
+    updateComparisonOnly();
+  });
+
+  chartEl.on("plotly_doubleclick", () => {
+    lastTapCip2 = "";
+    lastTapAt = 0;
+    clearSelectedCip2();
+    updateComparisonOnly();
+  });
+}
+
+
+/**
 function attachTreemapInteractionHandlers() {
   const chartEl = document.getElementById("chart");
   if (!chartEl) return;
@@ -1191,7 +1258,7 @@ function attachTreemapInteractionHandlers() {
     updateComparisonOnly();
   });
 }
-
+*/
 
 /**
 function attachTreemapInteractionHandlers() {
