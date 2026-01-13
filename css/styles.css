@@ -79,7 +79,7 @@ a:hover { text-decoration: underline; }
 }
 
 .byline-date {
-  margin-left: 8px;
+  
   white-space: nowrap;
 }
 
@@ -113,6 +113,8 @@ a:hover { text-decoration: underline; }
 
 
 /* Header actions (jump links) */
+
+
 .header-actions {
   display: flex;
   flex-wrap: wrap;
@@ -150,7 +152,7 @@ a.button-link.primary:hover {
 }
 
 /* =========================================
-   Quick start (refined for numbered steps)
+   Quick start (numbered steps; ordered correctly)
    ========================================= */
 
 .quickstart {
@@ -169,20 +171,12 @@ a.button-link.primary:hover {
   color: var(--text);
 }
 
-/* Default: single-column, clean numbering */
+/* Default (mobile/normal): single column, clean numbering */
 .quickstart ol {
   margin: 0;
-  padding-left: 20px;   /* controls number gutter */
-  color: var(--muted);
-}
-
-.quickstart ol {
+  padding-left: 22px;          /* number gutter */
   list-style-position: outside;
-}
-
-.quickstart ol li::marker {
-  font-weight: 600;
-  color: var(--text);
+  color: var(--muted);
 }
 
 .quickstart li {
@@ -190,24 +184,47 @@ a.button-link.primary:hover {
   line-height: 1.45;
 }
 
+/* Make the numbers read like “labels” */
+.quickstart li::marker {
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* Emphasis within each step */
 .quickstart li strong {
   color: var(--text);
   font-weight: 600;
 }
 
-/* Wide screens: two-column layout WITHOUT breaking the step order */
+/* Wide screens: two columns WITH correct 1->2->3->4 order */
 @media (min-width: 860px) {
   .quickstart ol {
     display: grid;
     grid-template-columns: 1fr 1fr;
     column-gap: 28px;
-    row-gap: 6px;
+    row-gap: 8px;              /* slightly more breathing room than 6px */
+    grid-auto-flow: row;       /* ensures left-to-right filling */
   }
 
   .quickstart li {
     margin: 0;
+    break-inside: avoid;
   }
 }
+
+/* Optional: slightly tighten on very small screens */
+@media (max-width: 420px) {
+  .quickstart {
+    padding: 10px 12px;
+  }
+
+  .quickstart li {
+    margin: 5px 0;
+  }
+}
+/* =========================================
+   Details / Interact boxes
+   ========================================= */
 
 .details {
   margin-top: 10px;
